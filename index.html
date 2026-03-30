@@ -209,47 +209,59 @@
     }
 
     function calc() {
-        const currentM = document.getElementById('monthPicker').value;
-        const parse = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
-        let totalOtCashMonth = 0, totalOtHrsMonth = 0;
-        let yearTotalIncome = 0;
+    const currentM = document.getElementById('monthPicker').value;
+    const parse = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
+    let totalOtCashMonth = 0, totalOtHrsMonth = 0;
+    let yearTotalIncome = 0;
 
-        // รายได้คงที่ทั้งปี
-        for(let i=0; i<12; i++) {
-            const c = db.configs[i] || { salary: "0", living: "0", travel: "0" };
-            yearTotalIncome += (parse(c.salary) + parse(c.living) + parse(c.travel));
-        }
+    // คำนวณรายได้ฐานทั้งปี
+    for(let i=0; i<12; i++) {
+        const c = db.configs[i] || { salary: "0", living: "0", travel: "0" };
+        yearTotalIncome += (parse(c.salary) + parse(c.living) + parse(c.travel));
+    }
 
-        Object.keys(db.days).forEach(key => {
-            const d = db.days[key];
-            const [mIdx, dIdx] = key.split('-').map(Number);
-            const mSalary = parse((db.configs[mIdx] || {salary:"30,000"}).salary);
-            const dayRate = mSalary / 30, hourRate = dayRate / 8;
-            const isWE = (new Date(year, mIdx, dIdx).getDay() % 6 === 0);
-            let status = d.status || (isWE ? 'holiday' : 'normal');
+    Object.keys(db.days).forEach(key => {
+        const d = db.days[key];
+        const [mIdx, dIdx] = key.split('-').map(Number);
+        const mSalary = parse((db.configs[mIdx] || {salary:"30,000"}).salary);
+        const dayRate = mSalary / 30, hourRate = dayRate / 8;
+        const isWE = (new Date(year, mIdx, dIdx).getDay() % 6 === 0);
+        let status = d.status || (isWE ? 'holiday' : 'normal');
 
-            const otEl = document.getElementById(`ot-h-${key}`);
-            const cashEl = document.getElementById(`cash-${key}`);
+        const otEl = document.getElementById(`ot-h-${key}`);
+        const cashEl = document.getElementById(`cash-${key}`);
 
-            if(d.in && d.out) {
-                const s = d.in.split(':').map(Number), e = d.out.split(':').map(Number);
-                let startF = s[0] + s[1]/60, endF = e[0] + e[1]/60;
-                let otHrs = 0, dailyCash = 0;
-                
-                if(status === 'holiday') { dailyCash = dayRate; otHrs = Math.max(0, endF - 17.5); dailyCash += (otHrs * hourRate * 1.5); }
-                else { if(endF > 18.5) otHrs = endF - 18.5; dailyCash = otHrs * hourRate * 1.5; }
+        // แก้ไขจุดนี้: ถ้ามีทั้งเวลาเข้าและออก ถึงจะคำนวณเงิน
+        if(d.in && d.out && d.in.trim() !== "" && d.out.trim() !== "") {
+            const s = d.in.split(':').map(Number), e = d.out.split(':').map(Number);
+            let startF = s[0] + s[1]/60, endF = e[0] + e[1]/60;
+            let otHrs = 0, dailyCash = 0;
+            
+            if(status === 'holiday') { 
+                dailyCash = dayRate; 
+                otHrs = Math.max(0, endF - 17.5); 
+                dailyCash += (otHrs * hourRate * 1.5); 
+            } else { 
+                if(endF > 18.5) otHrs = endF - 18.5; 
+                dailyCash = otHrs * hourRate * 1.5; 
+            }
 
-                yearTotalIncome += dailyCash;
-                if(mIdx == currentM) {
-                    totalOtCashMonth += dailyCash; totalOtHrsMonth += otHrs;
-                    if(otEl) otEl.innerText = otHrs.toFixed(1);
-                    if(cashEl) cashEl.innerText = dailyCash.toLocaleString(undefined,{minimumFractionDigits:2});
-                }
-            } else if (mIdx == currentM) {
+            yearTotalIncome += dailyCash;
+            if(mIdx == currentM) {
+                totalOtCashMonth += dailyCash; totalOtHrsMonth += otHrs;
+                if(otEl) otEl.innerText = otHrs.toFixed(1);
+                if(cashEl) cashEl.innerText = dailyCash.toLocaleString(undefined,{minimumFractionDigits:2});
+            }
+        } else {
+            // ถ้าช่องใดช่องหนึ่งว่าง ให้รีเซ็ตยอดเงินในแถวนั้นเป็น 0 ทันที
+            if(mIdx == currentM) {
                 if(otEl) otEl.innerText = "0";
                 if(cashEl) cashEl.innerText = "0.00";
             }
-        });
+        }
+    });
+    // ... ส่วนแสดงผลยอดรวมคงเดิม ...
+}
 
         const curConf = db.configs[currentM] || { salary: "30,000", living: "0", travel: "0" };
         const curFixed = parse(curConf.salary) + parse(curConf.living) + parse(curConf.travel);
