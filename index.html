@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payroll Pro MAX v12.1 - Fixed Annual Total</title>
+    <title>Payroll Pro MAX v12.4 - Red Weekends & Smart Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,6 +13,7 @@
             --success: #10b981;
             --danger: #ef4444;
             --holiday-bg: #e0f2fe;
+            --weekend-text: #dc2626; /* สีแดงสำหรับเสาร์-อาทิตย์ */
         }
 
         body {
@@ -46,6 +47,7 @@
         thead th { background: #f1f5f9; padding: 12px; font-size: 13px; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #ddd; }
         tbody td { padding: 8px; border-bottom: 1px solid #f8fafc; text-align: center; }
 
+        .text-weekend { color: var(--weekend-text) !important; font-weight: 700; }
         .row-holiday { background-color: var(--holiday-bg) !important; }
         .row-sick { background-color: #fee2e2 !important; }
         .row-personal { background-color: #fef3c7 !important; }
@@ -62,14 +64,11 @@
 </head>
 <body>
 
-<div id="customAlert">
-    <h2 id="alertTitle" style="margin:0;"></h2>
-    <p id="alertMsg" style="font-size:18px; color:#555;"></p>
-</div>
+<div id="customAlert"><h2 id="alertTitle" style="margin:0;"></h2><p id="alertMsg" style="font-size:18px; color:#555;"></p></div>
 
 <div class="container">
     <div class="header-pro">
-        <h1 style="margin:0; font-size: 24px; color: var(--primary);">ลงเวลาทำงาน #OT_ปี69 <span style="font-weight:300;">(v12.1)</span></h1>
+        <h1 style="margin:0; font-size: 24px; color: var(--primary);">🏔️ Payroll Pro MAX <span style="font-weight:300;">(v12.4)</span></h1>
         <div style="display: flex; gap: 10px;">
             <select id="monthPicker" onchange="initTable()" style="padding:8px 15px; border-radius:10px; font-weight:700; border:2px solid var(--primary);">
                 <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option><option value="2">มีนาคม</option>
@@ -122,12 +121,9 @@
 <script>
     const year = 2026;
     const leaveQuota = { sick: 30, personal: 6, vacation: 10, monk: 15, military: 60 };
-    const statusOptions = { 
-        normal: "ปกติ", holiday: "วันหยุด", sick: "ลาป่วย", 
-        personal: "ลากิจ", vacation: "พักร้อน", monk: "ลาอุปสมบท", military: "ลารับราชการ" 
-    };
+    const statusOptions = { normal: "ปกติ", holiday: "วันหยุด", sick: "ลาป่วย", personal: "ลากิจ", vacation: "พักร้อน", monk: "ลาอุปสมบท", military: "ลารับราชการ" };
     
-    let db = JSON.parse(localStorage.getItem('payroll_v12_fixed')) || { days: {}, configs: {} };
+    let db = JSON.parse(localStorage.getItem('payroll_v12_final')) || { days: {}, configs: {} };
 
     function formatAndSave(el) {
         let v = el.value.replace(/\D/g, "");
@@ -137,16 +133,12 @@
 
     function saveConfigs() {
         const m = document.getElementById('monthPicker').value;
-        db.configs[m] = { 
-            salary: document.getElementById('salary').value, 
-            living: document.getElementById('living').value, 
-            travel: document.getElementById('travel').value 
-        };
+        db.configs[m] = { salary: document.getElementById('salary').value, living: document.getElementById('living').value, travel: document.getElementById('travel').value };
         sync();
     }
 
     function sync() {
-        localStorage.setItem('payroll_v12_fixed', JSON.stringify(db));
+        localStorage.setItem('payroll_v12_final', JSON.stringify(db));
         calc();
     }
 
@@ -163,7 +155,8 @@
         const daysInMonth = new Date(year, parseInt(m) + 1, 0).getDate();
         for (let i = 1; i <= daysInMonth; i++) {
             const date = new Date(year, m, i);
-            const isWE = (date.getDay() === 0 || date.getDay() === 6);
+            const dayNum = date.getDay(); // 0 = Sun, 6 = Sat
+            const isWE = (dayNum === 0 || dayNum === 6);
             const key = `${m}-${i}`;
             const saved = db.days[key] || {};
             const tr = document.createElement('tr');
@@ -173,7 +166,7 @@
             else if(statusOptions[currentStatus] && currentStatus !== 'normal') tr.className = `row-${currentStatus}`;
 
             tr.innerHTML = `
-                <td style="font-weight:600;">${i} (${['อา','จ','อ','พ','พฤ','ศ','ส'][date.getDay()]})</td>
+                <td class="${isWE ? 'text-weekend' : ''}">${i} (${['อา','จ','อ','พ','พฤ','ศ','ส'][dayNum]})</td>
                 <td><input type="text" class="time-input" onkeydown="handleEnter(event, '${key}', 'in', this)" value="${saved.in || ''}"></td>
                 <td><input type="text" class="time-input" onkeydown="handleEnter(event, '${key}', 'out', this)" value="${saved.out || ''}"></td>
                 <td>
@@ -192,12 +185,26 @@
 
     function handleEnter(e, key, field, obj) {
         if (e.key === "Enter") {
-            let v = obj.value.replace(/[^0-9]/g, "");
-            if(v.length >= 3) v = v.slice(0, v.length-2).padStart(2,'0') + ":" + v.slice(-2);
-            else if(v.length > 0) v = v.padStart(2,'0') + ":00";
-            obj.value = v;
+            let val = obj.value.trim();
             if(!db.days[key]) db.days[key] = {};
-            db.days[key][field] = v;
+            
+            if (val === "") {
+                db.days[key][field] = "";
+            } else {
+                let processed = val.replace('.', ':');
+                let parts = processed.split(':');
+                let hh, mm;
+                if (parts.length === 2) {
+                    hh = parts[0].padStart(2, '0');
+                    mm = parts[1].padEnd(2, '0').slice(0, 2);
+                } else {
+                    let raw = processed.replace(/[^0-9]/g, "");
+                    if (raw.length <= 2) { hh = raw.padStart(2, '0'); mm = "00"; }
+                    else { hh = raw.slice(0, raw.length - 2).padStart(2, '0'); mm = raw.slice(-2); }
+                }
+                db.days[key][field] = `${hh}:${mm}`;
+                obj.value = `${hh}:${mm}`;
+            }
             sync();
             obj.blur();
         }
@@ -206,9 +213,6 @@
     function changeStatus(key, sel) {
         if(!db.days[key]) db.days[key] = {};
         db.days[key].status = sel.value;
-        if(sel.value !== 'normal' && sel.value !== 'holiday') {
-            showAlert("✅ บันทึกสถานะ", statusOptions[sel.value]);
-        }
         sync();
         initTable();
     }
@@ -219,40 +223,23 @@
         sync();
     }
 
-    function showAlert(title, msg) {
-        const a = document.getElementById('customAlert');
-        document.getElementById('alertTitle').innerText = title;
-        document.getElementById('alertMsg').innerText = msg;
-        a.style.display = 'block';
-        setTimeout(() => a.style.display = 'none', 1200);
-    }
-
     function calc() {
         const currentM = document.getElementById('monthPicker').value;
         const parse = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
-        
         let totalOtCashMonth = 0, totalOtHrsMonth = 0;
-        let mLeaves = { sick:0, personal:0, vacation:0, monk:0, military:0 };
-        let yLeaves = { sick:0, personal:0, vacation:0, monk:0, military:0 };
+        let mLeaves = { sick:0, personal:0, vacation:0, monk:0, military:0 }, yLeaves = { ...mLeaves };
         let yearTotalIncome = 0;
 
-        // คำนวณรายได้สะสมจาก Config ของทุกเดือน
         for(let i=0; i<12; i++) {
-            const conf = db.configs[i] || { salary: "0", living: "0", travel: "0" };
-            yearTotalIncome += (parse(conf.salary) + parse(conf.living) + parse(conf.travel));
+            const c = db.configs[i] || { salary: "0", living: "0", travel: "0" };
+            yearTotalIncome += (parse(c.salary) + parse(c.living) + parse(c.travel));
         }
 
-        // วนลูปคำนวณ OT และวันลาจากฐานข้อมูลทั้งหมด
         Object.keys(db.days).forEach(key => {
             const d = db.days[key];
             const [mIdx, dIdx] = key.split('-').map(Number);
-            
-            // ดึงเงินเดือนของเดือนนั้นๆ มาคิดค่าแรงรายวัน
-            const mConf = db.configs[mIdx] || { salary: "30,000" };
-            const mSalary = parse(mConf.salary);
-            const dayRate = mSalary / 30;
-            const hourRate = dayRate / 8;
-
+            const mSalary = parse((db.configs[mIdx] || {salary:"30,000"}).salary);
+            const dayRate = mSalary / 30, hourRate = dayRate / 8;
             const isWE = (new Date(year, mIdx, dIdx).getDay() % 6 === 0);
             let status = d.status || (isWE ? 'holiday' : 'normal');
 
@@ -261,43 +248,36 @@
                 if(mIdx == currentM) mLeaves[status]++;
             }
 
-            if(d.in && d.out && d.in.includes(':') && d.out.includes(':')) {
-                const s = d.in.split(':').map(Number);
-                const e = d.out.split(':').map(Number);
+            const otEl = document.getElementById(`ot-h-${key}`);
+            const cashEl = document.getElementById(`cash-${key}`);
+
+            if(d.in && d.out) {
+                const s = d.in.split(':').map(Number), e = d.out.split(':').map(Number);
                 let startF = s[0] + s[1]/60, endF = e[0] + e[1]/60;
                 let otHrs = 0, dailyCash = 0;
                 
-                if(status === 'holiday') {
-                    dailyCash = dayRate;
-                    otHrs = Math.max(0, endF - 17.5);
-                    dailyCash += (otHrs * hourRate * 1.5);
-                } else {
-                    if(endF > 18.5) otHrs = endF - 18.5;
-                    dailyCash = otHrs * hourRate * 1.5;
-                }
+                if(status === 'holiday') { dailyCash = dayRate; otHrs = Math.max(0, endF - 17.5); dailyCash += (otHrs * hourRate * 1.5); }
+                else { if(endF > 18.5) otHrs = endF - 18.5; dailyCash = otHrs * hourRate * 1.5; }
 
-                yearTotalIncome += dailyCash; // รวม OT เข้ายอดสะสมรายปี
-
+                yearTotalIncome += dailyCash;
                 if(mIdx == currentM) {
                     totalOtCashMonth += dailyCash; totalOtHrsMonth += otHrs;
-                    const otEl = document.getElementById(`ot-h-${key}`);
-                    const cashEl = document.getElementById(`cash-${key}`);
                     if(otEl) otEl.innerText = otHrs.toFixed(1);
                     if(cashEl) cashEl.innerText = dailyCash.toLocaleString(undefined,{minimumFractionDigits:2});
                 }
+            } else if (mIdx == currentM) {
+                if(otEl) otEl.innerText = "0";
+                if(cashEl) cashEl.innerText = "0.00";
             }
         });
 
-        // อัปเดต UI
-        const currentConf = db.configs[currentM] || { salary: "30,000", living: "0", travel: "0" };
-        const currentFixed = parse(currentConf.salary) + parse(currentConf.living) + parse(currentConf.travel);
-        
+        const curConf = db.configs[currentM] || { salary: "30,000", living: "0", travel: "0" };
+        const curFixed = parse(curConf.salary) + parse(curConf.living) + parse(curConf.travel);
         document.getElementById('totalOtMonth').innerText = totalOtHrsMonth.toFixed(1);
         document.getElementById('sumOt').innerText = totalOtCashMonth.toLocaleString(undefined,{minimumFractionDigits:2});
-        document.getElementById('sumFixed').innerText = currentFixed.toLocaleString();
-        document.getElementById('sumNet').innerText = "฿" + (currentFixed + totalOtCashMonth).toLocaleString(undefined,{minimumFractionDigits:2});
+        document.getElementById('sumFixed').innerText = curFixed.toLocaleString();
+        document.getElementById('sumNet').innerText = "฿" + (curFixed + totalOtCashMonth).toLocaleString(undefined,{minimumFractionDigits:2});
         document.getElementById('yearTotal').innerText = "฿" + yearTotalIncome.toLocaleString(undefined,{minimumFractionDigits:2});
-        
         document.getElementById('monthlyLeaveBox').innerHTML = Object.keys(mLeaves).map(k=>`<div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">${statusOptions[k]}: <b>${mLeaves[k]} วัน</b></div>`).join('');
         document.getElementById('yearlyLeaveBox').innerHTML = Object.keys(yLeaves).map(k=>`<div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">${statusOptions[k]}: <b>เหลือ ${leaveQuota[k]-yLeaves[k]}</b></div>`).join('');
     }
