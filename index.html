@@ -129,29 +129,55 @@
 </div>
 
 <script>
-    // --- ⚠️ กรุณาเติมค่าจาก Firebase ของคุณที่นี่ ---
-    const firebaseConfig = {
-        apiKey: "AIzaSy...", 
-        authDomain: "your-project.firebaseapp.com",
-        databaseURL: "https://your-project-default-rtdb.firebasedatabase.app",
-        projectId: "your-project",
-        storageBucket: "your-project.appspot.com",
-        messagingSenderId: "...",
-        appId: "..."
-    };
+    // --- 1. ระบบจัดการ Config (ป้องกัน Hardcode) ---
+    let savedConfig = localStorage.getItem('payroll_fb_config');
+    
+    if (!savedConfig) {
+        // ถ้าไม่มีค่าในเครื่อง ให้เด้งถาม
+        const input = prompt("กรุณาวาง Firebase Config JSON ของคุณที่นี่:");
+        if (input) {
+            try {
+                // ตรวจสอบว่าเป็น JSON ที่ถูกต้องไหม
+                JSON.parse(input); 
+                localStorage.setItem('payroll_fb_config', input);
+                savedConfig = input;
+            } catch (e) {
+                alert("รูปแบบ Config ไม่ถูกต้อง กรุณา Refresh แล้วลองใหม่");
+            }
+        }
+    }
 
-    firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('payroll_v13_cloud');
+    // นำค่าที่เซฟไว้มาใช้งาน
+    const firebaseConfig = savedConfig ? JSON.parse(savedConfig) : null;
 
+    if (firebaseConfig) {
+        firebase.initializeApp(firebaseConfig);
+        // ตรวจสอบว่ามี databaseURL ไหม ถ้าไม่มีให้เตือน
+        if(!firebaseConfig.databaseURL) {
+            alert("ใน Config ของคุณไม่มี databaseURL! ระบบ Cloud จะไม่ทำงาน");
+        }
+    } else {
+        alert("ระบบทำงานในโหมด Offline (ไม่ได้เชื่อมต่อ Cloud)");
+    }
+
+    const dbRef = firebaseConfig ? firebase.database().ref('payroll_v13_cloud') : null;
+
+    // --- ส่วนตัวแปรพื้นฐาน ---
     const year = 2026;
     const stats = { normal:"ปกติ", holiday:"วันหยุด", sick:"ลาป่วย", personal:"ลากิจ", vacation:"พักร้อน" };
     const quota = { sick: 30, personal: 6, vacation: 10 };
     let db = { days: {}, configs: {} };
 
-    dbRef.on('value', (snapshot) => {
-        const val = snapshot.val();
-        if(val) { db = val; initTable(); } else { initTable(); }
-    });
+    // --- 2. การเชื่อมต่อข้อมูล ---
+    if (dbRef) {
+        dbRef.on('value', (snapshot) => {
+            const val = snapshot.val();
+            db = val || { days: {}, configs: {} };
+            initTable();
+        });
+    } else {
+        initTable();
+    }
 
     function saveAll() {
         const m = document.getElementById('monthPicker').value;
@@ -161,10 +187,19 @@
             living: document.getElementById('living').value, 
             travel: document.getElementById('travel').value 
         };
-        dbRef.set(db);
-        calc();
+        
+        if (dbRef) {
+            dbRef.set(db).then(() => {
+                calc();
+            }).catch(err => {
+                console.error("Cloud Save Error:", err);
+            });
+        } else {
+            calc();
+        }
     }
 
+    // --- 3. ฟังก์ชันตารางและสถานะ (เหมือนเดิมแต่เพิ่มสี) ---
     function initTable() {
         const tbody = document.getElementById('workTable');
         const m = parseInt(document.getElementById('monthPicker').value);
@@ -187,7 +222,7 @@
             
             const tr = document.createElement('tr');
             let curS = saved.status || 'normal';
-            tr.className = `row-${curS}`;
+            tr.className = `row-${curS}`; // ใส่สีตามสถานะ
 
             tr.innerHTML = `
                 <td style="font-weight:700;">${i} (${['อา','จ','อ','พ','พฤ','ศ','ส'][dNum]})</td>
@@ -217,12 +252,10 @@
         const row = sel.closest('tr');
         if(row) row.className = `row-${statusKey}`;
 
-        // เด้งแจ้งเตือนเมื่อกดลา
         if(['sick', 'personal', 'vacation'].includes(statusKey)) {
             const dayNum = key.split('-')[1];
             showLeaveAlert(`บันทึกการ [${stats[statusKey]}]<br>ของวันที่ ${dayNum} เรียบร้อยแล้ว!`);
         }
-
         saveAll();
     }
 
@@ -319,7 +352,13 @@
         saveAll();
     }
 
-    function clearAll() { if(confirm("ลบข้อมูลทั้งหมดบน Cloud?")) { dbRef.remove(); location.reload(); } }
+    function clearAll() { 
+        if(confirm("ลบข้อมูลบน Cloud และล้าง Config ทั้งหมด?")) { 
+            if(dbRef) dbRef.remove(); 
+            localStorage.removeItem('payroll_fb_config');
+            location.reload(); 
+        } 
+    }
 </script>
 </body>
 </html>
