@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payroll Pro MAX v13.0 - Cloud Mode</title>
+    <title>Payroll Pro MAX v13.1 - Cloud Fixed</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet">
     
@@ -18,13 +18,11 @@
             --bg-sick: #fee2e2; --bg-personal: #fef3c7; --bg-vacation: #dcfce7;
         }
 
-        /* --- สีแยกตามวันลา --- */
         .row-normal { background-color: transparent; }
         .row-holiday { background-color: #fff1f2 !important; }
         .row-sick { background-color: var(--bg-sick) !important; }
         .row-personal { background-color: var(--bg-personal) !important; }
         .row-vacation { background-color: var(--bg-vacation) !important; }
-        tr { transition: background-color 0.3s ease; }
 
         body { 
             font-family: 'Chakra Petch', sans-serif; margin: 0; 
@@ -42,23 +40,28 @@
 
         /* --- Alert Style --- */
         #alertOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; backdrop-filter: blur(4px); }
-        #customAlert { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 30px; z-index: 10000; text-align: center; border: 5px solid var(--primary); width: 350px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        #customAlert { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 30px; z-index: 10000; text-align: center; border: 5px solid var(--primary); width: 350px; }
 
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .config-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .input-group label { display: block; font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
         .input-group input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 18px; font-weight: 700; }
+        
         .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
         .table-area { background: white; border-radius: 15px; border: 1px solid #e2e8f0; overflow: hidden; }
         .scroll-box { max-height: 500px; overflow-y: auto; }
+        
         table { width: 100%; border-collapse: collapse; }
         th { background: #f1f5f9; padding: 15px; font-size: 14px; position: sticky; top: 0; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        
         .time-box { width: 85px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-weight: 700; font-family: inherit; }
         .status-box { padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 600; font-family: inherit; width: 100%; }
+        
         .sidebar-card { background: #f8fafc; padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
         .leave-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-weight: 600; }
         .year-total-card { background: var(--accent); color: white; padding: 20px; border-radius: 18px; text-align: center; }
+        
         .footer-summary { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 20px; margin-top: 25px; }
         .sum-item { background: white; padding: 20px; border-radius: 18px; text-align: center; border: 1px solid #e2e8f0; }
         .sum-item.highlight { background: var(--primary); color: white; border: none; }
@@ -68,8 +71,8 @@
 
 <div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.98); z-index:99999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
     <div style="background:white; padding:40px; border-radius:24px; width:320px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
-        <h2 style="color:#2563eb; margin-bottom:25px; font-family: 'Chakra Petch', sans-serif;">🔐 Payroll Admin</h2>
-        <input type="email" id="loginEmail" placeholder="อีเมล (Admin)" style="width:100%; padding:12px; margin-bottom:10px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; font-family: inherit;">
+        <h2 style="color:#2563eb; margin-bottom:25px;">🔐 Payroll Admin</h2>
+        <input type="email" id="loginEmail" placeholder="eqpakkat@gmail.com" style="width:100%; padding:12px; margin-bottom:10px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; font-family: inherit;">
         <input type="password" id="loginPass" placeholder="รหัสผ่าน" style="width:100%; padding:12px; margin-bottom:20px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; font-family: inherit;">
         <button onclick="doLogin()" style="width:100%; background:#2563eb; color:white; border:none; padding:15px; border-radius:12px; font-weight:700; cursor:pointer; font-size:18px; font-family: inherit;">เข้าสู่ระบบ</button>
         <div id="loginError" style="color:#ef4444; font-size:14px; margin-top:15px; font-weight:600;"></div>
@@ -85,7 +88,7 @@
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0; color:var(--primary);">🏔️ Payroll Pro MAX (v13.0)</h1>
+        <h1 style="margin:0; color:var(--primary);">🏔️ Payroll Pro MAX (v13.1)</h1>
         <div style="display:flex; gap:10px;">
             <select id="monthPicker" onchange="initTable()" style="padding:10px; border-radius:12px; font-weight:700; border:2px solid var(--primary); font-family: inherit;">
                 <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option><option value="2">มีนาคม</option>
@@ -140,63 +143,58 @@
 </div>
 
 <script>
-    // --- ส่วนตั้งค่า Firebase (จากรูปที่ 23) ---
+    // --- อัปเดต Config ตามรูปที่ 9 ของคุณ ---
     const firebaseConfig = {
-        apiKey: "AIzaSyBu9bT1YxWs6nQEEdedFMAagh4DTbw-Fvc",
+        apiKey: "AIzaSyBu9bT1YxWs6nQEEdedFMAagh4DTbw-Fvc", // ตรวจสอบความถูกต้องจากรูปที่ 9
         authDomain: "my-payroll-data.firebaseapp.com",
         databaseURL: "https://my-payroll-data-default-rtdb.firebaseio.com",
         projectId: "my-payroll-data",
         storageBucket: "my-payroll-data.appspot.com",
         messagingSenderId: "1016629953460",
-        appId: "1:1016629953460:web:8662963665363412345678" // ปรับ AppID ให้ตรงถ้ามีการเปลี่ยนแปลง
+        appId: "1:1016629953460:web:8662963665363412"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const dbRef = firebase.database().ref('payroll_v13_cloud');
 
-    // --- ระบบ Login ---
+    // --- ระบบ Login (Fixed) ---
     function doLogin() {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
         const errorDiv = document.getElementById('loginError');
         
-        errorDiv.innerText = "กำลังตรวจสอบ...";
+        errorDiv.innerText = "กำลังเชื่อมต่อ...";
         
         auth.signInWithEmailAndPassword(email, pass).catch(err => {
             console.error(err);
-            errorDiv.innerText = "❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง (Error 400: เช็ค API Key)";
+            errorDiv.innerText = "❌ ล็อกอินไม่สำเร็จ: " + err.message;
         });
     }
 
     auth.onAuthStateChanged(user => {
         const overlay = document.getElementById('loginOverlay');
         if (user) {
-            // 🔥 สำคัญ: ก๊อปปี้ UID จาก Firebase มาวางที่นี่
-            const adminUID = "คัดลอก_UID_จาก_Firebase_มาวางตรงนี้"; 
-            
-            if (user.uid === adminUID || adminUID === "คัดลอก_UID_จาก_Firebase_มาวางตรงนี้") {
-                overlay.style.display = 'none';
-                console.log("Admin Logged In!");
-            } else {
-                document.getElementById('loginError').innerText = "⚠️ คุณไม่มีสิทธิ์เข้าถึงระบบนี้";
-                auth.signOut();
-            }
+            overlay.style.display = 'none';
+            console.log("Welcome Admin:", user.email);
+            syncData(); // เริ่มซิงค์ข้อมูลเมื่อล็อกอินสำเร็จ
         } else {
             overlay.style.display = 'flex';
         }
     });
 
-    // --- ส่วนคำนวณ Payroll เดิม ---
+    // --- ส่วนคำนวณและจัดการข้อมูล ---
     const year = 2026;
     const stats = { normal:"ปกติ", holiday:"วันหยุด", sick:"ลาป่วย", personal:"ลากิจ", vacation:"พักร้อน" };
     const quota = { sick: 30, personal: 6, vacation: 10 };
     let db = { days: {}, configs: {} };
 
-    dbRef.on('value', (snapshot) => {
-        const val = snapshot.val();
-        if(val) { db = val; initTable(); } else { initTable(); }
-    });
+    function syncData() {
+        dbRef.on('value', (snapshot) => {
+            const val = snapshot.val();
+            if(val) { db = val; initTable(); } else { initTable(); }
+        });
+    }
 
     function saveAll() {
         const m = document.getElementById('monthPicker').value;
@@ -262,8 +260,7 @@
         if(row) row.className = `row-${statusKey}`;
 
         if(['sick', 'personal', 'vacation'].includes(statusKey)) {
-            const dayNum = key.split('-')[1];
-            showLeaveAlert(`บันทึกการ [${stats[statusKey]}]<br>ของวันที่ ${dayNum} เรียบร้อยแล้ว!`);
+            showLeaveAlert(`บันทึกการ [${stats[statusKey]}] เรียบร้อย!`);
         }
         saveAll();
     }
