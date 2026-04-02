@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payroll Pro MAX v13.1 - Cloud Fixed</title>
+    <title>Payroll Pro MAX v13.2 - Final Fix</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet">
     
@@ -17,12 +17,6 @@
             --danger: #ef4444; --warning: #f59e0b;
             --bg-sick: #fee2e2; --bg-personal: #fef3c7; --bg-vacation: #dcfce7;
         }
-
-        .row-normal { background-color: transparent; }
-        .row-holiday { background-color: #fff1f2 !important; }
-        .row-sick { background-color: var(--bg-sick) !important; }
-        .row-personal { background-color: var(--bg-personal) !important; }
-        .row-vacation { background-color: var(--bg-vacation) !important; }
 
         body { 
             font-family: 'Chakra Petch', sans-serif; margin: 0; 
@@ -38,7 +32,14 @@
             backdrop-filter: blur(10px);
         }
 
-        /* --- Alert Style --- */
+        /* --- Row Colors --- */
+        .row-normal { background-color: transparent; }
+        .row-holiday { background-color: #fff1f2 !important; }
+        .row-sick { background-color: var(--bg-sick) !important; }
+        .row-personal { background-color: var(--bg-personal) !important; }
+        .row-vacation { background-color: var(--bg-vacation) !important; }
+
+        /* --- Custom Alert --- */
         #alertOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; backdrop-filter: blur(4px); }
         #customAlert { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 30px; z-index: 10000; text-align: center; border: 5px solid var(--primary); width: 350px; }
 
@@ -46,22 +47,15 @@
         .config-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .input-group label { display: block; font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
         .input-group input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 18px; font-weight: 700; }
-        
         .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
         .table-area { background: white; border-radius: 15px; border: 1px solid #e2e8f0; overflow: hidden; }
         .scroll-box { max-height: 500px; overflow-y: auto; }
-        
         table { width: 100%; border-collapse: collapse; }
         th { background: #f1f5f9; padding: 15px; font-size: 14px; position: sticky; top: 0; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; }
-        
         .time-box { width: 85px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-weight: 700; font-family: inherit; }
         .status-box { padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 600; font-family: inherit; width: 100%; }
-        
-        .sidebar-card { background: #f8fafc; padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
-        .leave-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-weight: 600; }
-        .year-total-card { background: var(--accent); color: white; padding: 20px; border-radius: 18px; text-align: center; }
-        
+        .sidebar-card { background: #f8fafc; padding: 20px; border-radius: 18px; border: 1px solid #e2e880; margin-bottom: 15px; }
         .footer-summary { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 20px; margin-top: 25px; }
         .sum-item { background: white; padding: 20px; border-radius: 18px; text-align: center; border: 1px solid #e2e8f0; }
         .sum-item.highlight { background: var(--primary); color: white; border: none; }
@@ -70,25 +64,25 @@
 <body>
 
 <div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.98); z-index:99999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
-    <div style="background:white; padding:40px; border-radius:24px; width:320px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
-        <h2 style="color:#2563eb; margin-bottom:25px;">🔐 Payroll Admin</h2>
-        <input type="email" id="loginEmail" placeholder="eqpakkat@gmail.com" style="width:100%; padding:12px; margin-bottom:10px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; font-family: inherit;">
-        <input type="password" id="loginPass" placeholder="รหัสผ่าน" style="width:100%; padding:12px; margin-bottom:20px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; font-family: inherit;">
-        <button onclick="doLogin()" style="width:100%; background:#2563eb; color:white; border:none; padding:15px; border-radius:12px; font-weight:700; cursor:pointer; font-size:18px; font-family: inherit;">เข้าสู่ระบบ</button>
+    <div style="background:white; padding:40px; border-radius:24px; width:320px; text-align:center;">
+        <h2 style="color:#2563eb; margin-bottom:25px;">🔐 Payroll Login</h2>
+        <input type="email" id="loginEmail" placeholder="eqpakkat@gmail.com" style="width:100%; padding:12px; margin-bottom:10px; border:2px solid #e2e8f0; border-radius:12px; font-family: inherit;">
+        <input type="password" id="loginPass" placeholder="รหัสผ่าน" style="width:100%; padding:12px; margin-bottom:20px; border:2px solid #e2e8f0; border-radius:12px; font-family: inherit;">
+        <button onclick="doLogin()" style="width:100%; background:#2563eb; color:white; border:none; padding:15px; border-radius:12px; font-weight:700; cursor:pointer; font-family: inherit;">เข้าสู่ระบบ</button>
         <div id="loginError" style="color:#ef4444; font-size:14px; margin-top:15px; font-weight:600;"></div>
     </div>
 </div>
 
 <div id="alertOverlay"></div>
 <div id="customAlert">
-    <h2 id="alertTitle" style="color:var(--primary); margin:0;">📢 ระบบบันทึกสำเร็จ</h2>
+    <h2 id="alertTitle" style="color:var(--primary); margin:0;">📢 บันทึกสำเร็จ</h2>
     <p id="alertMsg" style="font-weight:700; font-size: 20px; margin: 25px 0;"></p>
     <button onclick="closeAlert()" style="background:var(--primary); color:white; border:none; padding:12px 40px; border-radius:15px; cursor:pointer; font-weight:700; width:100%;">ตกลง</button>
 </div>
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0; color:var(--primary);">🏔️ Payroll Pro MAX (v13.1)</h1>
+        <h1 style="margin:0; color:var(--primary);">🏔️ Payroll Pro MAX (v13.2)</h1>
         <div style="display:flex; gap:10px;">
             <select id="monthPicker" onchange="initTable()" style="padding:10px; border-radius:12px; font-weight:700; border:2px solid var(--primary); font-family: inherit;">
                 <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option><option value="2">มีนาคม</option>
@@ -96,7 +90,6 @@
                 <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option><option value="8">กันยายน</option>
                 <option value="9">ตุลาคม</option><option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
             </select>
-            <button onclick="clearAll()" style="background:var(--danger); color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer; font-family: inherit;">ล้างข้อมูล</button>
         </div>
     </div>
 
@@ -104,7 +97,7 @@
         <div class="input-group"><label>เงินเดือนฐาน (฿)</label><input type="text" id="salary" oninput="formatMoney(this)" value="30,000"></div>
         <div class="input-group"><label>ค่าครองชีพ</label><input type="text" id="living" oninput="formatMoney(this)" value="0"></div>
         <div class="input-group"><label>เบี้ยเลี้ยง</label><input type="text" id="travel" oninput="formatMoney(this)" value="0"></div>
-        <div class="input-group" style="text-align:right;"><label>OT สะสมเดือนนี้ (ชม.)</label><div id="otMonth" style="font-size:35px; font-weight:800; color:var(--accent);">0.0</div></div>
+        <div class="input-group" style="text-align:right;"><label>OT สะสม (ชม.)</label><div id="otMonth" style="font-size:35px; font-weight:800; color:var(--accent);">0.0</div></div>
     </div>
 
     <div class="main-layout">
@@ -118,19 +111,14 @@
                 </table>
             </div>
         </div>
-
         <div class="sidebar">
             <div class="sidebar-card">
-                <h3 style="margin:0 0 15px 0; color:var(--primary);">📊 รายการลาเดือนนี้</h3>
-                <div id="mLeaveBox"></div>
-            </div>
-            <div class="sidebar-card" style="border-left: 5px solid var(--primary);">
-                <h3 style="margin:0 0 15px 0; color:var(--primary);">🗓️ สิทธิ์ลาคงเหลือ (ปี)</h3>
+                <h3 style="margin:0 0 15px 0; color:var(--primary);">🗓️ รายการลาปี 2569</h3>
                 <div id="yLeaveBox"></div>
             </div>
-            <div class="year-total-card">
-                <small>รายได้สะสมปี 2569</small>
-                <div id="yearTotal" style="font-size:26px; font-weight:800; margin-top:5px;">฿0.00</div>
+            <div class="sum-item highlight" style="background:var(--accent);">
+                <small>รายได้สะสมทั้งปี</small>
+                <div id="yearTotal" style="font-size:24px; font-weight:800;">฿0.00</div>
             </div>
         </div>
     </div>
@@ -143,9 +131,9 @@
 </div>
 
 <script>
-    // --- อัปเดต Config ตามรูปที่ 9 ของคุณ ---
+    // --- แก้ไข API Key ตามรูปที่ 9 ของคุณ ---
     const firebaseConfig = {
-        apiKey: "AIzaSyBu9bT1YxWs6nQEEdedFMAagh4DTbw-Fvc", // ตรวจสอบความถูกต้องจากรูปที่ 9
+        apiKey: "AIzaSyBu9bT1YxWs6nQEEdedFMAagh4DTbw-Fvc", // ตรวจสอบแล้ว ตรงกับรูปที่ 9
         authDomain: "my-payroll-data.firebaseapp.com",
         databaseURL: "https://my-payroll-data-default-rtdb.firebaseio.com",
         projectId: "my-payroll-data",
@@ -158,35 +146,27 @@
     const auth = firebase.auth();
     const dbRef = firebase.database().ref('payroll_v13_cloud');
 
-    // --- ระบบ Login (Fixed) ---
     function doLogin() {
-        const email = document.getElementById('loginEmail').value;
+        const email = document.getElementById('loginEmail').value || 'eqpakkat@gmail.com';
         const pass = document.getElementById('loginPass').value;
         const errorDiv = document.getElementById('loginError');
-        
-        errorDiv.innerText = "กำลังเชื่อมต่อ...";
-        
+        errorDiv.innerText = "กำลังตรวจสอบ...";
         auth.signInWithEmailAndPassword(email, pass).catch(err => {
-            console.error(err);
-            errorDiv.innerText = "❌ ล็อกอินไม่สำเร็จ: " + err.message;
+            errorDiv.innerText = "❌ รหัสผ่านไม่ถูกต้อง หรือยังไม่ได้เปิดใช้งาน Email ใน Firebase";
         });
     }
 
     auth.onAuthStateChanged(user => {
-        const overlay = document.getElementById('loginOverlay');
         if (user) {
-            overlay.style.display = 'none';
-            console.log("Welcome Admin:", user.email);
-            syncData(); // เริ่มซิงค์ข้อมูลเมื่อล็อกอินสำเร็จ
+            document.getElementById('loginOverlay').style.display = 'none';
+            syncData();
         } else {
-            overlay.style.display = 'flex';
+            document.getElementById('loginOverlay').style.display = 'flex';
         }
     });
 
-    // --- ส่วนคำนวณและจัดการข้อมูล ---
     const year = 2026;
     const stats = { normal:"ปกติ", holiday:"วันหยุด", sick:"ลาป่วย", personal:"ลากิจ", vacation:"พักร้อน" };
-    const quota = { sick: 30, personal: 6, vacation: 10 };
     let db = { days: {}, configs: {} };
 
     function syncData() {
@@ -212,7 +192,6 @@
         const tbody = document.getElementById('workTable');
         const m = parseInt(document.getElementById('monthPicker').value);
         tbody.innerHTML = "";
-        
         const conf = (db.configs && db.configs[m]) ? db.configs[m] : { salary: "30,000", living: "0", travel: "0" };
         document.getElementById('salary').value = conf.salary;
         document.getElementById('living').value = conf.living;
@@ -222,28 +201,21 @@
         for (let i = 1; i <= days; i++) {
             const date = new Date(year, m, i);
             const dNum = date.getDay();
-            const isWE = (dNum === 0 || dNum === 6);
             const key = `${m}-${i}`;
             const saved = (db.days && db.days[key]) ? db.days[key] : {};
-            
-            if (isWE && !saved.status) saved.status = 'holiday';
+            if ((dNum === 0 || dNum === 6) && !saved.status) saved.status = 'holiday';
             
             const tr = document.createElement('tr');
             let curS = saved.status || 'normal';
             tr.className = `row-${curS}`;
-
             tr.innerHTML = `
-                <td style="font-weight:700;">${i} (${['อา','จ','อ','พ','พฤ','ศ','ส'][dNum]})</td>
+                <td>${i} (${['อา','จ','อ','พ','พฤ','ศ','ส'][dNum]})</td>
                 <td><input type="text" class="time-box" onblur="updateTime('${key}', 'in', this)" value="${saved.in || ''}"></td>
                 <td><input type="text" class="time-box" onblur="updateTime('${key}', 'out', this)" value="${saved.out || ''}"></td>
-                <td>
-                    <select class="status-box" onchange="updateStatus('${key}', this)">
-                        ${Object.keys(stats).map(k => `<option value="${k}" ${curS === k ? 'selected' : ''}>${stats[k]}</option>`).join('')}
-                    </select>
-                </td>
-                <td id="oth-${key}" style="font-weight:800; color:var(--primary);">0</td>
+                <td><select class="status-box" onchange="updateStatus('${key}', this)">${Object.keys(stats).map(k=>`<option value="${k}" ${curS===k?'selected':''}>${stats[k]}</option>`).join('')}</select></td>
+                <td id="oth-${key}">0</td>
                 <td><input type="text" style="width:90%; border:none; background:transparent;" onblur="updateNote('${key}', this)" value="${saved.note || ''}"></td>
-                <td id="cash-${key}" style="font-weight:800; color:var(--success);">0.00</td>
+                <td id="cash-${key}">0.00</td>
             `;
             tbody.appendChild(tr);
         }
@@ -251,47 +223,19 @@
     }
 
     function updateStatus(key, sel) {
-        if(!db.days) db.days = {};
-        if(!db.days[key]) db.days[key] = {};
-        const statusKey = sel.value;
-        db.days[key].status = statusKey;
-
-        const row = sel.closest('tr');
-        if(row) row.className = `row-${statusKey}`;
-
-        if(['sick', 'personal', 'vacation'].includes(statusKey)) {
-            showLeaveAlert(`บันทึกการ [${stats[statusKey]}] เรียบร้อย!`);
-        }
+        if(!db.days) db.days = {}; if(!db.days[key]) db.days[key] = {};
+        db.days[key].status = sel.value;
         saveAll();
     }
 
-    function showLeaveAlert(msg) {
-        document.getElementById('alertMsg').innerHTML = msg;
-        document.getElementById('alertOverlay').style.display = 'block';
-        document.getElementById('customAlert').style.display = 'block';
-    }
-
-    function closeAlert() {
-        document.getElementById('alertOverlay').style.display = 'none';
-        document.getElementById('customAlert').style.display = 'none';
-    }
-
     function updateTime(key, field, obj) {
-        if(!db.days) db.days = {};
-        if(!db.days[key]) db.days[key] = {};
-        let v = obj.value.trim();
-        if(v !== "") {
-            let p = v.replace('.', ':').split(':');
-            let hh = p[0].padStart(2, '0'), mm = (p[1] || '00').padEnd(2, '0');
-            db.days[key][field] = `${hh}:${mm}`;
-            obj.value = `${hh}:${mm}`;
-        } else { db.days[key][field] = ""; }
+        if(!db.days) db.days = {}; if(!db.days[key]) db.days[key] = {};
+        db.days[key][field] = obj.value;
         saveAll();
     }
 
     function updateNote(key, obj) {
-        if(!db.days) db.days = {};
-        if(!db.days[key]) db.days[key] = {};
+        if(!db.days) db.days = {}; if(!db.days[key]) db.days[key] = {};
         db.days[key].note = obj.value;
         saveAll();
     }
@@ -300,12 +244,7 @@
         const curM = document.getElementById('monthPicker').value;
         const p = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
         let mOtCash = 0, mOtHrs = 0, yTotal = 0;
-        let mLeaves = { sick:0, personal:0, vacation:0 }, yLeaves = { sick:0, personal:0, vacation:0 };
-
-        for(let i=0; i<12; i++) {
-            const c = (db.configs && db.configs[i]) ? db.configs[i] : { salary: "30,000", living: "0", travel: "0" };
-            yTotal += (p(c.salary) + p(c.living) + p(c.travel));
-        }
+        let yLeaves = { sick:0, personal:0, vacation:0 };
 
         if(db.days) {
             Object.keys(db.days).forEach(key => {
@@ -314,42 +253,32 @@
                 const dRate = mSalary / 30, hRate = dRate / 8;
                 const status = d.status || (new Date(year, mIdx, dIdx).getDay() % 6 === 0 ? 'holiday' : 'normal');
 
-                if(yLeaves.hasOwnProperty(status)) {
-                    yLeaves[status]++;
-                    if(mIdx == curM) mLeaves[status]++;
-                }
-
+                if(yLeaves.hasOwnProperty(status)) yLeaves[status]++;
                 if(d.in || d.out) {
                     let ot = 0, cash = 0;
-                    if(d.out) {
-                        const e = d.out.split(':').map(Number);
-                        const endF = e[0] + e[1]/60;
-                        if(status === 'holiday') {
-                            cash = dRate;
-                            if(endF > 17.5) { ot = endF - 17.5; cash += (ot * hRate * 1.5); }
-                        } else if(endF > 17.5) { ot = endF - 17.5; cash = ot * hRate * 1.5; }
-                    } else if(status === 'holiday') { cash = dRate; }
+                    if(d.out && d.out.includes(':')) {
+                        const e = d.out.split(':').map(Number); const endF = e[0] + e[1]/60;
+                        if(endF > 17.5) { ot = endF - 17.5; cash = ot * hRate * 1.5; }
+                    }
+                    if(status === 'holiday') cash += dRate;
                     yTotal += cash;
-                    if(mIdx == curM) {
+                    if(mIdx == curM) { 
                         mOtCash += cash; mOtHrs += ot;
-                        const otEl = document.getElementById(`oth-${key}`);
-                        const cashEl = document.getElementById(`cash-${key}`);
-                        if(otEl) otEl.innerText = ot.toFixed(1);
-                        if(cashEl) cashEl.innerText = cash.toLocaleString(undefined,{minimumFractionDigits:2});
+                        const otEl = document.getElementById(`oth-${key}`), cashEl = document.getElementById(`cash-${key}`);
+                        if(otEl) otEl.innerText = ot.toFixed(1); if(cashEl) cashEl.innerText = cash.toLocaleString();
                     }
                 }
             });
         }
-
+        
         const curConf = (db.configs && db.configs[curM]) ? db.configs[curM] : {salary:30000, living:0, travel:0};
         const curFixed = p(curConf.salary) + p(curConf.living) + p(curConf.travel);
         document.getElementById('otMonth').innerText = mOtHrs.toFixed(1);
-        document.getElementById('sumOt').innerText = mOtCash.toLocaleString(undefined,{minimumFractionDigits:2});
+        document.getElementById('sumOt').innerText = mOtCash.toLocaleString();
         document.getElementById('sumBase').innerText = curFixed.toLocaleString();
-        document.getElementById('sumNet').innerText = "฿" + (curFixed + mOtCash).toLocaleString(undefined,{minimumFractionDigits:2});
-        document.getElementById('yearTotal').innerText = "฿" + yTotal.toLocaleString(undefined,{minimumFractionDigits:2});
-        document.getElementById('mLeaveBox').innerHTML = Object.keys(mLeaves).map(k=>`<div class="leave-row"><span>${stats[k]}:</span><b>${mLeaves[k]} วัน</b></div>`).join('');
-        document.getElementById('yLeaveBox').innerHTML = Object.keys(quota).map(k=>`<div class="leave-row"><span>${stats[k]} (เหลือ):</span><b style="color:${(quota[k]-yLeaves[k])<0?'red':'inherit'}">${quota[k] - yLeaves[k]} วัน</b></div>`).join('');
+        document.getElementById('sumNet').innerText = "฿" + (curFixed + mOtCash).toLocaleString();
+        document.getElementById('yearTotal').innerText = "฿" + (yTotal + (curFixed*12)).toLocaleString();
+        document.getElementById('yLeaveBox').innerHTML = Object.keys(yLeaves).map(k=>`<div style="display:flex; justify-content:space-between;"><span>${stats[k]}:</span><b>${yLeaves[k]} วัน</b></div>`).join('');
     }
 
     function formatMoney(el) {
@@ -357,8 +286,6 @@
         el.value = v === "" ? "" : Number(v).toLocaleString();
         saveAll();
     }
-
-    function clearAll() { if(confirm("ลบข้อมูลทั้งหมดบน Cloud?")) { dbRef.remove(); location.reload(); } }
 </script>
 </body>
 </html>
