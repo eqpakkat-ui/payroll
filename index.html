@@ -140,64 +140,68 @@
 </div>
 
 <script>
-// --- ส่วนควบคุมความปลอดภัย (วางไว้บนสุดของ script) ---
-  const auth = firebase.auth();
-
-  // ฟังก์ชันทำงานเมื่อกดปุ่ม "เข้าสู่ระบบ"
-  function doLogin() {
-      const email = document.getElementById('loginEmail').value;
-      const pass = document.getElementById('loginPass').value;
-      const errorDiv = document.getElementById('loginError');
-      
-      errorDiv.innerText = "กำลังตรวจสอบ...";
-      
-      auth.signInWithEmailAndPassword(email, pass).catch(err => {
-          console.error(err);
-          errorDiv.innerText = "❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง";
-      });
-  }
-
-  // ระบบเช็คสถานะการ Login อัตโนมัติ
-  auth.onAuthStateChanged(user => {
-      const overlay = document.getElementById('loginOverlay');
-      if (user) {
-          // ตรวจสอบ UID ของคุณ (ที่ตั้งไว้ใน Rules)
-          if (user.uid === 'Vprvvy6aKcTrvlECt9EckThxBki1') {
-              overlay.style.display = 'none'; // Login ผ่าน ให้ปิดหน้าจอสีดำ
-              console.log("Admin Login Success!");
-          } else {
-              document.getElementById('loginError').innerText = "⚠️ คุณไม่มีสิทธิ์เข้าถึงระบบนี้";
-              auth.signOut();
-          }
-      } else {
-          overlay.style.display = 'flex'; // ถ้ายังไม่ Login ให้โชว์หน้าจอ Login ไว้
-      }
-  });
-  // --- จบส่วนควบคุมความปลอดภัย ---
-    // --- ⚠️ กรุณาเติมค่าจาก Firebase ของคุณที่นี่ ---
+    // 1. ตั้งค่า Config ของ Firebase (ใช้ค่าจริงของคุณที่นี่)
     const firebaseConfig = {
         apiKey: "AIzaSy...", 
-        authDomain: "your-project.firebaseapp.com",
-        databaseURL: "https://your-project-default-rtdb.firebasedatabase.app",
-        projectId: "your-project",
-        storageBucket: "your-project.appspot.com",
+        authDomain: "my-payroll-data.firebaseapp.com",
+        databaseURL: "https://my-payroll-data-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "my-payroll-data",
+        storageBucket: "my-payroll-data.appspot.com",
         messagingSenderId: "...",
         appId: "..."
-  }; //
+    };
 
+    // 2. เริ่มต้นการทำงาน (ต้องทำเป็นอย่างแรกสุด)
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref('payroll_v13_cloud');
-//
 
+    // 3. ประกาศตัวแปรใช้งาน
+    const auth = firebase.auth();
+    const dbRef = firebase.database().ref('payroll_v13_cloud');
+    
     const year = 2026;
     const stats = { normal:"ปกติ", holiday:"วันหยุด", sick:"ลาป่วย", personal:"ลากิจ", vacation:"พักร้อน" };
     const quota = { sick: 30, personal: 6, vacation: 10 };
     let db = { days: {}, configs: {} };
 
+    // 4. ฟังก์ชันสำหรับการเข้าสู่ระบบ
+    function doLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        const errorDiv = document.getElementById('loginError');
+        
+        errorDiv.innerText = "กำลังตรวจสอบ...";
+        
+        auth.signInWithEmailAndPassword(email, pass).catch(err => {
+            console.error(err);
+            errorDiv.innerText = "❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+        });
+    }
+
+    // 5. ระบบตรวจสอบสิทธิ์เข้าใช้งาน
+    auth.onAuthStateChanged(user => {
+        const overlay = document.getElementById('loginOverlay');
+        if (user) {
+            // ตรวจสอบ UID ของ Admin
+            if (user.uid === 'Vprvvy6aKcTrvlECt9EckThxBki1') {
+                overlay.style.display = 'none';
+                console.log("Admin Login Success!");
+            } else {
+                document.getElementById('loginError').innerText = "⚠️ คุณไม่มีสิทธิ์เข้าถึงระบบนี้";
+                auth.signOut();
+            }
+        } else {
+            overlay.style.display = 'flex';
+        }
+    });
+
+    // 6. ดึงข้อมูลจาก Cloud
     dbRef.on('value', (snapshot) => {
         const val = snapshot.val();
-        if(val) { db = val; initTable(); } else { initTable(); }
+        if(val) { db = val; } 
+        initTable(); 
     });
+
+    // --- ฟังก์ชันการทำงานของแอป (ส่วนที่เหลือคงเดิม) ---
 
     function saveAll() {
         const m = document.getElementById('monthPicker').value;
@@ -258,17 +262,12 @@
         if(!db.days[key]) db.days[key] = {};
         const statusKey = sel.value;
         db.days[key].status = statusKey;
-
-        // เปลี่ยนสีแถวทันที
         const row = sel.closest('tr');
         if(row) row.className = `row-${statusKey}`;
-
-        // เด้งแจ้งเตือนเมื่อกดลา
         if(['sick', 'personal', 'vacation'].includes(statusKey)) {
             const dayNum = key.split('-')[1];
             showLeaveAlert(`บันทึกการ [${stats[statusKey]}]<br>ของวันที่ ${dayNum} เรียบร้อยแล้ว!`);
         }
-
         saveAll();
     }
 
