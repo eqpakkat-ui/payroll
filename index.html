@@ -410,9 +410,15 @@
         syncToFirebase();
     };
 
-    window.updateStatus = (key, sel) => {
+   window.updateStatus = (key, sel) => {
         if(!db.days[key]) db.days[key] = {};
         db.days[key].status = sel.value;
+        
+        // --- เพิ่มโค้ดส่วนแจ้งเตือนกลับเข้ามาตรงนี้ ---
+        if(['sick', 'personal', 'vacation'].includes(sel.value)) {
+            window.showAlert(`บันทึกการลา: ${statsNames[sel.value]} เรียบร้อย`, '📝');
+        }
+        
         syncToFirebase();
     };
 
