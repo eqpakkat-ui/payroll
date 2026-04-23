@@ -427,7 +427,7 @@
         syncToFirebase();
     };
 
-    window.calc = () => {
+window.calc = () => {
         const curM = document.getElementById('monthPicker').value;
         const p = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
         
@@ -452,24 +452,65 @@
 
             if(d.in && d.out) {
                 const mSalary = p(db.configs[mIdx]?.salary || 30000);
-                const dRate = mSalary / 30;
-                const hRate = dRate / 8;
+                const dRate = mSalary / 30; // ค่าแรงต่อวัน
+                const hRate = dRate / 8;    // ค่าแรงต่อชั่วโมง
                 
-                let ot = 0, cash = 0;
-                const [h, min] = d.out.split(':').map(Number);
-                const endF = h + (min/60);
+                let ot = 0, cash = 0, extraHrsDisplay = 0;
+                
+                // แปลงเวลาเข้า-ออก เป็นจุดทศนิยม
+                const [inH, inM] = d.in.split(':').map(Number);
+                const [outH, outM] = d.out.split(':').map(Number);
+                const inF = inH + (inM/60);
+                const outF = outH + (outM/60);
 
-                if(endF > 18.5) ot = endF - 18.5; 
+                // --- 1. คำนวณชั่วโมงทำงานปกติ (เฉพาะช่วง 08:30 - 17:30) ---
+                let workStart = Math.max(inF, 8.5); // เริ่มนับเร็วสุดที่ 08:30
+                let workEnd = Math.min(outF, 17.5); // สิ้นสุดเวลาปกติที่ 17:30
+                let normalHrs = 0;
 
-                cash = (status === 'holiday') ? (dRate + (ot * hRate * 1.5)) : (ot * hRate * 1.5);
+                if (workEnd > workStart) {
+                    normalHrs = workEnd - workStart;
+                    
+                    // ระบบหักเวลาพักเที่ยง (12:00 - 13:00)
+                    if (workStart <= 12 && workEnd >= 13) {
+                        normalHrs -= 1; // ทำงานคร่อมเที่ยง หัก 1 ชม.
+                    } else if (workStart < 13 && workEnd > 12) {
+                        let breakStart = Math.max(workStart, 12);
+                        let breakEnd = Math.min(workEnd, 13);
+                        normalHrs -= (breakEnd - breakStart);
+                    }
+                }
+
+                // --- 2. คำนวณชั่วโมง OT (หักเวลาพักเบรก 17:30 - 18:30) ---
+                if (outF > 18.5) {
+                    // ถ้าเลิกงานหลัง 18:30 (18.5) ให้เริ่มนับ OT ตั้งแต่ 18:30 เป็นต้นไป
+                    ot = outF - 18.5; 
+                } else if (outF > 17.5) {
+                    // ถ้าเลิกงานในช่วง 17:30 - 18:30 ถือว่าเป็นช่วงพักเบรก จะไม่ได้ชั่วโมง OT
+                    ot = 0;
+                }
+
+                // --- 3. คิดเงินและตั้งค่าชั่วโมงแสดงผล ---
+                if (status === 'holiday') {
+                    // วันหยุด : ค่าแรงตามชั่วโมงทำจริง + ค่า OT
+                    cash = (normalHrs * hRate) + (ot * hRate * 1.5);
+                    extraHrsDisplay = normalHrs + ot; 
+                } else {
+                    // วันปกติ : เงินเดือนรวมไว้แล้ว ได้เพิ่มแค่เฉพาะ OT
+                    cash = (ot * hRate * 1.5);
+                    extraHrsDisplay = ot; 
+                }
 
                 yTotalInc += cash;
+                
                 if(mIdx == curM) {
-                    mOtCash += cash; mOtHrs += ot;
+                    mOtCash += cash; 
+                    mOtHrs += extraHrsDisplay; 
+                    
                     const otEl = document.getElementById(`oth-${key}`);
                     const cashEl = document.getElementById(`cash-${key}`);
-                    if(otEl) otEl.innerText = ot.toFixed(1) + " ชม.";
-                    if(cashEl) cashEl.innerText = cash.toLocaleString();
+                    if(otEl) otEl.innerText = extraHrsDisplay.toFixed(1) + " ชม.";
+                    if(cashEl) cashEl.innerText = cash.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
                 }
             }
         });
@@ -482,8 +523,8 @@
         const totalFixed = p(conf.salary) + p(conf.moving) + p(conf.living);
         
         document.getElementById('otMonth').innerText = mOtHrs.toFixed(1);
-        document.getElementById('sumOt').innerText = mOtCash.toLocaleString(undefined,{minimumFractionDigits:2});
-        document.getElementById('sumNet').innerText = "฿" + (totalFixed + mOtCash).toLocaleString(undefined,{minimumFractionDigits:2});
+        document.getElementById('sumOt').innerText = mOtCash.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+        document.getElementById('sumNet').innerText = "฿" + (totalFixed + mOtCash).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
     };
 </script>
 </body>
