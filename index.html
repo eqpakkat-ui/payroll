@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Time & OT Portal</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,7 +17,6 @@
 
         body {
             font-family: 'Chakra Petch', sans-serif; margin: 0;
-            /* พื้นหลังไล่สีสวยงาม */
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh; padding: 10px; color: #1e293b;
         }
@@ -86,7 +88,6 @@
         #alertOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.8); z-index: 1000; backdrop-filter: blur(5px); }
         #customAlert { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 25px; z-index: 1001; text-align: center; width: 80%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
-        /* --- สไตล์สุดล้ำสำหรับหน้า Login --- */
         #loginSection { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
         .login-box { 
             background: rgba(255, 255, 255, 0.95); 
@@ -126,17 +127,9 @@
 
 <div id="loginSection">
     <div class="login-box">
-        <div style="display:flex; justify-content:center; margin-bottom:10px;">
-            <div class="brand-logo" style="font-size: 30px;">
-                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="url(#gradLogo)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <defs>
-                        <linearGradient id="gradLogo" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:var(--primary);stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:var(--accent);stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path>
-                </svg>
+        <div style="display:flex; justify-content:center; margin-bottom:15px;">
+            <div class="brand-logo" style="font-size: 30px; flex-direction: column; gap: 5px;">
+                <img src="logo.png" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; drop-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <span class="brand-text">Time & OT</span>
             </div>
         </div>
@@ -157,10 +150,7 @@
 <div id="appSection" class="container">
     <div class="header">
         <div class="brand-logo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" /><stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" /></linearGradient></defs>
-                <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path>
-            </svg>
+            <img src="logo.png" alt="Logo" style="width: 35px; height: 35px; object-fit: contain;">
             <span class="brand-text">Time & OT Portal</span>
         </div>
         
@@ -217,7 +207,8 @@
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // --- Config ของคุณ ---
+    // =========================================================
+    // ⚠️ เอา Config ของคุณมาวางทับตรงนี้ ⚠️
     const firebaseConfig = {
       apiKey: "AIzaSyCB1AofSi9vx1_sbiuBytYTAzncrsn1gpk",
       authDomain: "my-payroll-app-4e527.firebaseapp.com",
@@ -227,6 +218,7 @@
       messagingSenderId: "472001377405",
       appId: "1:472001377405:web:d77ca10e52d2918c5c2d14"
     };
+    // =========================================================
 
     const app = initializeApp(firebaseConfig);
     const rtdb = getDatabase(app);
@@ -238,20 +230,18 @@
     let db = { days: {}, configs: {} };
     let isDataLoaded = false;
 
-    // --- ระบบตาเปิด/ปิดรหัสผ่าน ---
     window.togglePwd = () => {
         const pwdInput = document.getElementById('passwordInput');
         const eyeIcon = document.getElementById('togglePassword');
         if (pwdInput.type === 'password') {
             pwdInput.type = 'text';
-            eyeIcon.innerText = '🙈'; // เปลี่ยนเป็นรูปลิงปิดตาเวลามองเห็นรหัส
+            eyeIcon.innerText = '🙈';
         } else {
             pwdInput.type = 'password';
             eyeIcon.innerText = '👁️';
         }
     };
 
-    // --- แจ้งเตือน ---
     window.showAlert = (msg, icon="📋") => {
         document.getElementById('alertIcon').innerText = icon;
         document.getElementById('alertMsg').innerText = msg;
@@ -260,15 +250,14 @@
     };
     window.closeAlert = () => { document.getElementById('alertOverlay').style.display = 'none'; document.getElementById('customAlert').style.display = 'none'; };
 
-    // --- Auth ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            document.body.style.background = "#f1f5f9"; // เปลี่ยนพื้นหลังแอปให้เป็นสีสว่าง
+            document.body.style.background = "#f1f5f9";
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('appSection').style.display = 'block';
             startDatabaseSync();
         } else {
-            document.body.style.background = "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)"; // คืนพื้นหลังเข้มหน้าล็อคอิน
+            document.body.style.background = "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)";
             document.getElementById('loginSection').style.display = 'flex';
             document.getElementById('appSection').style.display = 'none';
         }
@@ -279,7 +268,6 @@
         const password = document.getElementById('passwordInput').value;
         if(!email || !password) return window.showAlert('กรุณากรอกข้อมูลให้ครบถ้วน', '❌');
         
-        // ปุ่มโหลด
         const btn = document.querySelector('.login-btn');
         btn.innerText = "กำลังเข้าสู่ระบบ...";
         
@@ -293,14 +281,12 @@
         });
     };
 
-    // กด Enter ล็อคอิน
     document.getElementById('passwordInput').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') window.login();
     });
 
     window.logout = () => { signOut(auth).then(() => { isDataLoaded = false; }); };
 
-    // --- Database ---
     function startDatabaseSync() {
         if(isDataLoaded) return; 
         onValue(ref(rtdb, 'payroll_data_2026'), (snapshot) => {
@@ -379,15 +365,12 @@
         window.calc();
     };
 
-    // --- Smart Time Format (แปลง 8.27 -> 08:27 อัตโนมัติ) ---
     window.updateTime = (key, field, obj) => {
         let v = obj.value.trim();
         if(!db.days[key]) db.days[key] = {};
         
         if (v !== "") {
-            // แปลงจุดเป็นโคลอน
             v = v.replace('.', ':');
-            // ลบอักษรแปลกปลอม
             v = v.replace(/[^0-9:]/g, '');
 
             if (!v.includes(':')) {
@@ -410,11 +393,11 @@
         syncToFirebase();
     };
 
-   window.updateStatus = (key, sel) => {
+    window.updateStatus = (key, sel) => {
         if(!db.days[key]) db.days[key] = {};
         db.days[key].status = sel.value;
         
-        // --- เพิ่มโค้ดส่วนแจ้งเตือนกลับเข้ามาตรงนี้ ---
+        // แจ้งเตือนวันลา
         if(['sick', 'personal', 'vacation'].includes(sel.value)) {
             window.showAlert(`บันทึกการลา: ${statsNames[sel.value]} เรียบร้อย`, '📝');
         }
