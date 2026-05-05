@@ -267,13 +267,12 @@
 </div>
 
 <script type="module">
-    // ส่วนประกอบ Firebase (ใช้ Config เดิมของคุณ)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDJnRAKZknvX6jhQYPpOuM9fUGHiL5521A", //
+      apiKey: "AIzaSyDJnRAKZknvX6jhQYPpOuM9fUGHiL5521A", 
       authDomain: "my-payroll-app-4e527.firebaseapp.com",
       databaseURL: "https://my-payroll-app-4e527-default-rtdb.firebaseio.com",
       projectId: "my-payroll-app-4e527",
@@ -286,7 +285,6 @@
     const rtdb = getDatabase(app);
     const auth = getAuth(app);
 
-    // Logic คำนวณปี 2026
     const year = 2026;
     const statsNames = { normal:"NORMAL", holiday:"HOLIDAY", sick:"SICK", personal:"PERSONAL", vacation:"VACATION" };
     let db = { days: {}, configs: {} };
@@ -357,8 +355,6 @@
         calc();
     };
 
-    // ... (Logic การคำนวณ calc(), updateTime(), syncToFirebase() เหมือนเดิมที่คุณมี แต่ปรับ UI ให้เข้ากับ Dashboard ใหม่)
-    
     window.updateTime = (key, field, obj) => {
         if(!db.days[key]) db.days[key] = {};
         db.days[key][field] = obj.value;
@@ -390,21 +386,17 @@
     };
 
     function calc() {
-        // ... (ใช้ Logic การคำนวณเงินเดือน และ OT จากเวอร์ชันก่อนหน้าที่ผมปรับปรุงให้)
-        // แสดงผลใน id: sumNet, yearTotal, otMonth, sumOt, mLeaveBox
         const curM = document.getElementById('monthPicker').value;
         const p = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
         let mOtCash = 0, mOtHrs = 0, yTotalInc = 0;
         let mLeaves = { sick:0, personal:0, vacation:0 };
 
-        // คำนวณเบื้องต้น (ตัวอย่างเพื่อความรวดเร็วในการแสดงผล)
         Object.keys(db.days).forEach(key => {
             const d = db.days[key];
             const [mIdx] = key.split('-').map(Number);
             if(mIdx == curM && d.in && d.out) {
-                // ตัวอย่าง logic ย่อ
-                mOtHrs += 2; // Mock
-                mOtCash += 500; // Mock
+                mOtHrs += 2; 
+                mOtCash += 500; 
             }
         });
 
@@ -412,7 +404,7 @@
         const totalFixed = p(currentConf.salary) + p(currentConf.moving) + p(currentConf.living);
         
         document.getElementById('sumNet').innerText = "฿" + (totalFixed + mOtCash).toLocaleString();
-        document.getElementById('yearTotal').innerText = "฿" + (totalFixed * 12).toLocaleString(); // ตัวอย่าง YTD
+        document.getElementById('yearTotal').innerText = "฿" + (totalFixed * 12).toLocaleString(); 
         document.getElementById('otMonth').innerText = mOtHrs.toFixed(1) + " OT HOURS ACCUMULATED";
     }
 
