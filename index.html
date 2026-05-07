@@ -3,203 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ระบบคำนวณเงินเดือนอัจฉริยะ V4 - Neumorphism Full</title>
+    <title>ระบบคำนวณเงินเดือนอัจฉริยะ V5 - Full Neumorphism</title>
 
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f0f2f5">
+    <meta name="theme-color" content="#e0e5ec">
     <link rel="apple-touch-icon" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #4f46e5; 
-            --primary-glow: rgba(79, 70, 229, 0.3);
             --accent: #9333ea;
             --success: #059669;
             --danger: #dc2626;
-            --bg-light: #f0f2f5;
+            --bg-light: #e0e5ec; /* สีพื้นหลัง Neumorphism มาตรฐาน */
             --text-main: #1e293b; 
             --text-muted: #64748b; 
+            
+            /* Neumorphism Shadows */
+            --shadow-out: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            --shadow-in: inset 6px 6px 10px 0 rgba(163,177,198, 0.5), inset -6px -6px 10px 0 rgba(255,255,255, 0.8);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Inter', 'Chakra Petch', sans-serif;
-            margin: 0;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: env(safe-area-inset-top) 15px 40px;
+            margin: 0; background-color: var(--bg-light); color: var(--text-main);
+            min-height: 100vh; padding: env(safe-area-inset-top) 15px 40px;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
-        /* --- Neumorphism Style --- */
-        .glass-panel {
-            background: var(--bg-light);
-            border-radius: 20px;
-            box-shadow: 10px 10px 20px #cfd1d4, -10px -10px 20px #ffffff; 
-        }
-
         .container { max-width: 1200px; margin: 20px auto; padding: 25px; }
 
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; padding-bottom: 20px;
-            border-bottom: 2px dashed #cbd5e1;
+            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px dashed #cbd5e1;
         }
 
         .brand-text {
-            font-size: 24px; font-weight: 800;
+            font-size: 26px; font-weight: 800;
             background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* --- Dashboard Summary Grid --- */
-        .hero-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        /* --- Neumorphic Cards & Inputs --- */
+        .neo-card {
+            background: var(--bg-light); border-radius: 20px; box-shadow: var(--shadow-out); padding: 25px;
         }
-
-        .stat-main-card {
-            padding: 25px;
-            background: var(--bg-light);
-            border-radius: 20px;
-            box-shadow: 8px 8px 16px #cfd1d4, -8px -8px 16px #ffffff;
-        }
-
-        .stat-label { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .stat-value { font-size: 34px; font-weight: 800; margin: 5px 0; color: var(--text-main); }
-        .sub-text { font-size: 14px; font-weight: 700; color: var(--text-muted); }
-
-        .list-unstyled { list-style: none; padding: 0; margin: 10px 0 0 0; font-weight: 600; color: var(--text-main); }
-        .list-unstyled li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #cbd5e1; }
-        .list-unstyled li:last-child { border-bottom: none; }
-
-        /* --- Config Bar --- */
-        .config-bar {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;
-            margin-bottom: 30px; padding: 25px; border-radius: 20px;
-        }
-
-        .input-box {
-            background: #e6e9ef;
-            box-shadow: inset 4px 4px 8px #c8cacd, inset -4px -4px 8px #ffffff;
+        .neo-input {
+            background: var(--bg-light); box-shadow: var(--shadow-in);
             border: none; border-radius: 12px; padding: 12px 15px;
             color: var(--text-main); font-weight: 600; font-size: 16px; width: 100%; transition: 0.3s;
         }
-        .input-box:focus { outline: none; box-shadow: inset 4px 4px 8px #c8cacd, inset -4px -4px 8px #ffffff, 0 0 0 2px var(--primary-glow); }
+        .neo-input:focus { outline: none; box-shadow: var(--shadow-in), 0 0 0 2px rgba(79, 70, 229, 0.3); }
+
+        /* --- Dashboard Top Grid --- */
+        .top-dashboard {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 35px;
+        }
+
+        .stat-label { font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+        .stat-value { font-size: 34px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .stat-sub { font-size: 15px; font-weight: 700; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 8px;}
 
         /* --- Table Style --- */
-        .table-container { border-radius: 20px; overflow: hidden; box-shadow: 8px 8px 16px #cfd1d4, -8px -8px 16px #ffffff; background: var(--bg-light); margin-bottom: 30px;}
+        .table-container { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-out); background: var(--bg-light); margin-bottom: 30px;}
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
-        th { padding: 18px; text-align: center; font-size: 13px; color: var(--text-muted); background: #e2e8f0; }
-        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+        th { padding: 18px; text-align: center; font-size: 13px; color: var(--text-muted); text-transform: uppercase; border-bottom: 2px solid #cbd5e1; }
+        td { padding: 12px 10px; border-bottom: 1px solid #cbd5e1; text-align: center; }
 
         .time-input {
-            width: 75px; background: #f8fafc; border: 1px solid #cbd5e1;
-            border-radius: 8px; padding: 8px; color: var(--text-main);
-            text-align: center; font-weight: 700;
+            width: 75px; background: var(--bg-light); box-shadow: var(--shadow-in); border: none;
+            border-radius: 8px; padding: 10px 5px; color: var(--text-main);
+            text-align: center; font-weight: 700; transition: 0.2s;
         }
+        .time-input:focus { outline: none; box-shadow: var(--shadow-in), 0 0 0 2px rgba(79, 70, 229, 0.3); }
 
-        /* --- Footer Summary (Total Year) --- */
-        .year-footer {
-            margin-top: 20px;
-            padding: 20px;
-            text-align: center;
-            background: linear-gradient(145deg, #ffffff, #e6e9ef);
-            border-radius: 20px;
-            box-shadow: 10px 10px 20px #cfd1d4, -10px -10px 20px #ffffff;
-        }
+        /* --- Row Colors (ชัดเจนขึ้น) --- */
+        .row-holiday { background-color: rgba(239, 68, 68, 0.15); } /* สีแดงอ่อน */
+        .row-vacation { background-color: rgba(16, 185, 129, 0.15); } /* สีเขียวอ่อน */
+        .row-sick { background-color: rgba(245, 158, 11, 0.2); } /* สีเหลือง/ส้มอ่อน */
+        .row-personal { background-color: rgba(147, 51, 234, 0.12); } /* สีม่วงอ่อน */
 
-        /* --- Login & Password --- */
+        /* --- Login & Button --- */
         #loginSection { display: flex; justify-content: center; align-items: center; height: 90vh; }
         .login-card { width: 100%; max-width: 400px; padding: 40px; text-align: center; }
         .password-container { position: relative; margin-bottom: 20px; }
         .toggle-password { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; user-select: none; }
         
         .btn-glow {
-            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background: linear-gradient(145deg, var(--primary), var(--accent));
             border: none; border-radius: 14px; color: white; padding: 16px;
             font-weight: 700; font-size: 16px; cursor: pointer; width: 100%;
-            box-shadow: 0 10px 20px var(--primary-glow); transition: 0.3s;
+            box-shadow: 6px 6px 12px rgba(163,177,198,0.6), -6px -6px 12px rgba(255,255,255, 0.5); transition: 0.2s;
         }
+        .btn-glow:active { box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2); }
 
-        /* --- Colors --- */
-        .row-holiday { background: rgba(239, 68, 68, 0.04); } 
-        .row-vacation { background: rgba(16, 185, 129, 0.06); } 
-        .row-sick { background: rgba(245, 158, 11, 0.06); } 
+        /* --- Popup Notification (กลางจอ) --- */
+        #statusNotify {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.95); border-radius: 24px; padding: 40px 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 9999; text-align: center; display: none; opacity: 0;
+            transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); border: 2px solid var(--primary);
+            backdrop-filter: blur(10px);
+        }
+        #statusNotify.show { display: block; transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .notify-title { font-size: 26px; font-weight: 900; margin-bottom: 5px; color: var(--text-main); }
+        .notify-detail { font-size: 18px; color: var(--text-muted); font-weight: 700; }
 
+        /* --- Responsive Mobile --- */
         @media (max-width: 768px) {
-            .hero-grid { grid-template-columns: 1fr; }
-            .config-bar { grid-template-columns: 1fr; }
-            .header { flex-direction: column; gap: 15px; }
+            body { padding: 10px; }
+            .container { padding: 10px; }
+            .top-dashboard { grid-template-columns: 1fr; gap: 15px; }
+            .header { flex-direction: column; gap: 15px; text-align: center;}
+            
             .table-container table, .table-container tbody, .table-container tr, .table-container td { display: block; }
             .table-container thead { display: none; }
-            .table-container tr { margin-bottom: 15px; padding: 15px; border-radius: 15px; background: #fff; border: 1px solid #e2e8f0; }
-            .table-container td { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border: none; border-bottom: 1px dashed #e2e8f0;}
-            .table-container td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); flex: 1; text-align: left; }
+            .table-container tr { margin-bottom: 20px; padding: 15px; border-radius: 20px; border: 1px solid #cbd5e1; box-shadow: var(--shadow-out); }
+            .table-container td { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border: none; border-bottom: 1px dashed #cbd5e1;}
+            .table-container td:last-child { border-bottom: none;}
+            .table-container td::before { content: attr(data-label); font-weight: 800; color: var(--text-muted); flex: 1; text-align: left; }
+            .table-container td input.time-input { flex: 1; max-width: 45%; margin: 0 2px; }
             .hide-mobile { display: none !important; }
         }
     </style>
 </head>
 <body>
 
+<div id="statusNotify">
+    <div id="notifyIcon" style="font-size: 60px; margin-bottom: 15px;">✅</div>
+    <div class="notify-title" id="notifyTitle">บันทึกสำเร็จ</div>
+    <div class="notify-detail" id="notifyDetail">รายละเอียด</div>
+</div>
+
 <div id="loginSection">
-    <div class="glass-panel login-card animate-fade">
-        <h1 class="brand-text" style="font-size: 26px; margin-bottom: 30px;">ระบบจัดการเงินเดือน</h1>
-        <input type="email" id="emailInput" class="input-box" style="margin-bottom: 15px;" placeholder="อีเมลผู้ใช้งาน">
+    <div class="neo-card login-card animate-fade">
+        <h1 class="brand-text" style="font-size: 30px; margin-bottom: 30px;">ระบบจัดการเงินเดือน</h1>
+        <input type="email" id="emailInput" class="neo-input" style="margin-bottom: 20px;" placeholder="อีเมลผู้ใช้งาน">
         <div class="password-container">
-            <input type="password" id="passwordInput" class="input-box" placeholder="รหัสผ่าน">
-            <span class="toggle-password" id="togglePassword">👁️</span>
+            <input type="password" id="passwordInput" class="neo-input" placeholder="รหัสผ่าน">
+            <span class="toggle-password" id="togglePassword" style="font-size: 20px;">👁️</span>
         </div>
-        <button class="btn-glow" onclick="window.login()">เข้าสู่ระบบ</button>
+        <button class="btn-glow" onclick="window.login()" style="margin-top: 10px;">เข้าสู่ระบบ</button>
     </div>
 </div>
 
 <div id="appSection" class="container animate-fade" style="display: none;">
     <div class="header">
-        <div class="brand-text">ระบบคำนวณเงินเดือนอัจฉริยะ</div>
+        <div class="brand-text">💰 ระบบเงินเดือนอัจฉริยะ</div>
         <div style="display: flex; gap: 10px;">
-            <select id="monthPicker" class="input-box" style="width: 140px; font-weight: 700;" onchange="initTable()">
+            <select id="monthPicker" class="neo-input" style="width: 150px; font-weight: 800; color: var(--primary);" onchange="initTable()">
                 <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option><option value="2">มีนาคม</option>
                 <option value="3">เมษายน</option><option value="4" selected>พฤษภาคม</option><option value="5">มิถุนายน</option>
                 <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option><option value="8">กันยายน</option>
                 <option value="9">ตุลาคม</option><option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
             </select>
-            <button onclick="logout()" style="background:none; border:2px solid var(--danger); color:var(--danger); padding:8px 15px; border-radius:12px; font-weight:700; cursor:pointer;">ออก</button>
+            <button onclick="logout()" style="background:var(--bg-light); box-shadow:var(--shadow-out); border:none; color:var(--danger); padding:12px 20px; border-radius:12px; font-weight:800; cursor:pointer;">ออก</button>
         </div>
     </div>
 
-    <div class="hero-grid">
-        <div class="stat-main-card">
-            <div class="stat-label">ยอดรับสุทธิเดือนนี้</div>
-            <div id="sumNet" class="stat-value" style="color:var(--primary)">฿0.00</div>
-            <div id="workedMonth" class="sub-text">เวลารวมทำงาน: 0.0 ชม.</div>
+    <div class="top-dashboard">
+        
+        <div class="neo-card">
+            <div class="stat-label" style="margin-bottom: 15px; color: var(--primary);">📥 ข้อมูลรายรับพื้นฐาน</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-weight: 700;">เงินเดือน</span>
+                <input type="text" id="salary" class="neo-input" oninput="formatMoney(this)" value="13,130" style="width: 120px; text-align: right;">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-weight: 700;">ค่าครองชีพ</span>
+                <input type="text" id="living" class="neo-input" oninput="formatMoney(this)" value="5,000" style="width: 120px; text-align: right;">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 700;">ค่าเดินทาง/โยกย้าย</span>
+                <input type="text" id="relocation" class="neo-input" oninput="formatMoney(this)" value="3,500" style="width: 120px; text-align: right;">
+            </div>
         </div>
-        <div class="stat-main-card">
-            <div class="stat-label">OT ที่ทำได้เดือนนี้</div>
-            <div id="otMonthCash" class="stat-value" style="color:var(--success)">+฿0.00</div>
-            <div id="otMonthHrs" class="sub-text text-success">เวลา OT รวม: 0.0 ชม.</div>
-        </div>
-        <div class="stat-main-card">
-            <div class="stat-label">รายการลาเดือนนี้</div>
-            <ul class="list-unstyled">
-                <li>ป่วย: <span><b id="mL_sick">0</b> วัน</span></li>
-                <li>กิจ: <span><b id="mL_personal">0</b> วัน</span></li>
-                <li>พักร้อน: <span><b id="mL_vacation">0</b> วัน</span></li>
-            </ul>
-        </div>
-    </div>
 
-    <div class="config-bar glass-panel">
-        <div><label class="stat-label">เงินเดือนพื้นฐาน</label><input type="text" id="salary" class="input-box" oninput="formatMoney(this)" value="30,000"></div>
-        <div><label class="stat-label">ค่าโยกย้าย</label><input type="text" id="relocation" class="input-box" oninput="formatMoney(this)" value="0"></div>
-        <div><label class="stat-label">ค่าครองชีพ / อื่นๆ</label><input type="text" id="living" class="input-box" oninput="formatMoney(this)" value="0"></div>
+        <div class="neo-card">
+            <div class="stat-label" style="color: var(--success);">⏱️ สรุปโบนัส OT เดือนนี้</div>
+            <div id="otMonthCash" class="stat-value" style="color:var(--success); margin: 10px 0;">฿0.00</div>
+            <div style="border-top: 1px dashed #cbd5e1; margin: 15px 0;"></div>
+            <div class="stat-sub"><span>( ชั่วโมง OT ) รวม:</span> <span id="otMonthHrs" style="color:var(--primary);">0 ชม.</span></div>
+            <div class="stat-sub"><span>วันหยุด/เสาร์ ที่ทำ:</span> <span id="otWeekendDays" style="color:var(--danger);">0 วัน</span></div>
+        </div>
+
+        <div class="neo-card">
+            <div class="stat-label" style="color: var(--accent);">💵 รายได้สุทธิเดือนนี้</div>
+            <div id="sumNet" class="stat-value" style="color:var(--accent); font-size: 38px; margin: 5px 0;">฿0.00</div>
+            <div style="border-top: 1px dashed #cbd5e1; margin: 10px 0;"></div>
+            <div class="stat-sub" style="font-size: 13px;"><span>จำนวนลาเดือนนี้:</span> <span>ป่วย <b id="mL_sick">0</b> | กิจ <b id="mL_personal">0</b> | พักร้อน <b id="mL_vacation">0</b></span></div>
+            <div class="stat-sub" style="font-size: 13px;"><span>คงเหลือทั้งปี:</span> <span>ป่วย <b id="yL_sick">30</b> | กิจ <b id="yL_personal">6</b> | พักร้อน <b id="yL_vacation">12</b></span></div>
+        </div>
+
     </div>
 
     <div class="table-container">
@@ -208,19 +209,14 @@
                 <tr>
                     <th>วันที่</th>
                     <th>เวลา เข้า-ออก</th>
-                    <th>ประเภทวัน</th>
-                    <th>เวลารวม/OT</th>
-                    <th>เงินพิเศษ OT</th>
+                    <th>ประเภทวัน (สถานะ)</th>
+                    <th>หมายเหตุ</th>
+                    <th>เวลา OT</th>
+                    <th>ค่า OT</th>
                 </tr>
             </thead>
             <tbody id="workTable"></tbody>
         </table>
-    </div>
-
-    <div class="year-footer">
-        <div class="stat-label" style="margin-bottom: 5px;">ยอดรับสุทธิสะสมทั้งปี (2026)</div>
-        <div id="ytdTotal" style="font-size: 32px; font-weight: 900; color: var(--accent);">฿0.00</div>
-        <div class="sub-text" style="margin-top: 5px;">(รวมเงินเดือน + ค่าเดินทาง + ค่าครองชีพ + OT ของทุกเดือนที่มีข้อมูล)</div>
     </div>
 </div>
 
@@ -244,7 +240,8 @@
     const auth = getAuth(app);
 
     const year = 2026;
-    const statsNames = { normal:"วันทำงานปกติ", holiday:"วันหยุด/นักขัตฯ", sick:"ลาป่วย", personal:"ลากิจ", vacation:"ลาพักร้อน" };
+    const QUOTAS = { sick: 30, personal: 6, vacation: 12 };
+    const statsNames = { normal:"วันทำงานปกติ", holiday:"วันหยุด/เสาร์-อาทิตย์", sick:"ลาป่วย", personal:"ลากิจ", vacation:"ลาพักร้อน" };
     let db = { days: {}, configs: {} };
 
     onAuthStateChanged(auth, (user) => {
@@ -265,6 +262,7 @@
     };
     window.logout = () => signOut(auth);
 
+    // ปุ่มลูกตาดูรหัสผ่าน
     document.getElementById('togglePassword').addEventListener('click', function() {
         const pInput = document.getElementById('passwordInput');
         pInput.type = pInput.type === 'password' ? 'text' : 'password';
@@ -283,10 +281,11 @@
         const m = parseInt(document.getElementById('monthPicker').value);
         tbody.innerHTML = "";
         
-        const conf = db.configs[m] || { salary: "30,000", relocation: "0", living: "0" };
+        // ดึงค่า Config เก่า (ตั้ง Default ตามโจทย์)
+        const conf = db.configs[m] || { salary: "13,130", relocation: "3,500", living: "5,000" };
         document.getElementById('salary').value = conf.salary;
-        document.getElementById('relocation').value = conf.relocation || "0";
-        document.getElementById('living').value = conf.living || "0";
+        document.getElementById('relocation').value = conf.relocation;
+        document.getElementById('living').value = conf.living;
         
         const daysInMonth = new Date(year, m + 1, 0).getDate();
         const thaiDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
@@ -298,24 +297,26 @@
             const status = d.status || ( (date.getDay() === 0 || date.getDay() === 6) ? 'holiday' : 'normal');
 
             const tr = document.createElement('tr');
-            tr.className = `row-${status}`;
+            tr.className = `row-${status}`; // นำคลาสไปจัดการสีพื้นหลัง CSS
             tr.innerHTML = `
-                <td data-label="วันที่"><span style="font-weight:800; font-size:18px;">${i}</span> <small>${thaiDays[date.getDay()]}</small></td>
+                <td data-label="วันที่"><span style="font-weight:900; font-size:20px;">${i}</span> <small style="color:var(--text-muted);">${thaiDays[date.getDay()]}</small></td>
                 <td data-label="เวลา เข้า-ออก">
                     <input type="text" class="time-input" onblur="updateTime('${key}','in',this)" value="${d.in||''}" placeholder="08.00">
                     <input type="text" class="time-input" onblur="updateTime('${key}','out',this)" value="${d.out||''}" placeholder="17.00">
                 </td>
-                <td data-label="ประเภทวัน">
-                    <select class="input-box" style="font-size:13px; font-weight:700; padding:8px;" onchange="updateStatus('${key}',this)">
+                <td data-label="สถานะ">
+                    <select class="neo-input" style="font-size:14px; font-weight:800; padding:10px;" onchange="updateStatus('${key}',this)">
                         ${Object.keys(statsNames).map(k=>`<option value="${k}" ${status==k?'selected':''}>${statsNames[k]}</option>`).join('')}
                     </select>
                 </td>
-                <td data-label="เวลารวม/OT">
-                    <div id="workedh-${key}" style="font-weight:700;">0 ชม.</div>
-                    <div id="oth-${key}" style="color:var(--primary); font-size:12px; font-weight:800;">0 ชม. (OT)</div>
+                <td data-label="หมายเหตุ" class="hide-mobile">
+                    <input type="text" class="neo-input" style="font-size:13px; padding:10px;" onblur="updateNote('${key}',this)" value="${d.note||''}">
                 </td>
-                <td data-label="เงินพิเศษ OT" style="text-align:right;">
-                    <div id="cash-${key}" style="color:var(--success); font-weight:800;">฿0.00</div>
+                <td data-label="เวลา OT">
+                    <div id="oth-${key}" style="color:var(--primary); font-size:15px; font-weight:900;">0 ชม.</div>
+                </td>
+                <td data-label="ค่า OT" style="text-align:right;">
+                    <div id="cash-${key}" style="color:var(--success); font-size:16px; font-weight:900;">฿0</div>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -330,8 +331,22 @@
     };
 
     window.updateStatus = (key, sel) => {
+        const newStatus = sel.value;
         if(!db.days[key]) db.days[key] = {};
-        db.days[key].status = sel.value;
+        db.days[key].status = newStatus;
+        
+        set(ref(rtdb, 'payroll_data_2026'), db).then(() => {
+            // โชว์ Popup เฉพาะตอนเปลี่ยนเป็น ลาป่วย/ลากิจ/พักร้อน
+            if (['sick', 'personal', 'vacation'].includes(newStatus)) {
+                showNotify(newStatus);
+            }
+            calc(); // สั่งคำนวณใหม่
+        });
+    };
+
+    window.updateNote = (key, obj) => {
+        if(!db.days[key]) db.days[key] = {};
+        db.days[key].note = obj.value;
         set(ref(rtdb, 'payroll_data_2026'), db);
     };
 
@@ -347,6 +362,7 @@
         set(ref(rtdb, 'payroll_data_2026'), db);
     };
 
+    // แปลงเวลาให้รองรับการพิมพ์ด้วยจุด (.)
     function parseTime(t) {
         if (!t) return null;
         let s = t.replace('.', ':');
@@ -355,73 +371,122 @@
         return isNaN(h) || isNaN(m) ? null : h + (m / 60);
     }
 
+    // ฟังก์ชันนับวันลาทั้งปี
+    function countLeaves(dbDays) {
+        let y = { sick: 0, personal: 0, vacation: 0 };
+        Object.keys(dbDays).forEach(key => {
+            const [mIdx, dIdx] = key.split('-').map(Number);
+            const date = new Date(year, mIdx, dIdx);
+            const status = dbDays[key].status || ( (date.getDay() === 0 || date.getDay() === 6) ? 'holiday' : 'normal');
+            if (y.hasOwnProperty(status)) y[status]++;
+        });
+        return y;
+    }
+
+    // ฟังก์ชันแสดง Popup กลางจอ
+    function showNotify(status) {
+        const yLeaves = countLeaves(db.days);
+        const remain = QUOTAS[status] - yLeaves[status];
+        const icons = { sick: '🤒', personal: '🏠', vacation: '🏖️' };
+        
+        const el = document.getElementById('statusNotify');
+        document.getElementById('notifyIcon').innerText = icons[status];
+        document.getElementById('notifyTitle').innerText = `คุณเลือก ${statsNames[status]}`;
+        
+        let colorStr = remain >= 0 ? 'var(--success)' : 'var(--danger)';
+        document.getElementById('notifyDetail').innerHTML = `ใช้ไปแล้ว ${yLeaves[status]} วัน <br><br> <span style="font-size:20px; color:${colorStr};">คงเหลือโควตา: <b>${remain}</b> วัน</span>`;
+        
+        el.style.display = 'block';
+        setTimeout(() => el.classList.add('show'), 10);
+        setTimeout(() => {
+            el.classList.remove('show');
+            setTimeout(() => el.style.display = 'none', 300);
+        }, 3000); // โชว์ค้างไว้ 3 วินาที
+    }
+
+    // ลอจิกการคำนวณ (อิงจากการปัดเศษ Math.round อย่างแม่นยำ)
     function calc() {
         const curM = parseInt(document.getElementById('monthPicker').value);
         const p = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
         
-        let annualNetTotal = 0;
+        const conf = db.configs[curM] || { salary: "0", relocation: "0", living: "0" };
+        
+        const salary = p(conf.salary);
+        const living = p(conf.living);
+        const relocation = p(conf.relocation); // ใช้ตัวแปร relocation ตามฐานข้อมูล แต่ UI เขียนว่าค่าเดินทาง
+        
+        // 1. เรตพื้นฐาน
+        const dailyRate = Math.round(salary / 30);
+        const hourlyRate = (salary / 30) / 8;
+        
+        // 2. ปัดเศษเรต OT
+        const rate_1_5 = Math.round(hourlyRate * 1.5);
+        const rate_3_0 = Math.round(hourlyRate * 3);
 
-        for (let m = 0; m < 12; m++) {
-            const conf = db.configs[m] || { salary: "0", relocation: "0", living: "0" };
-            const hRate = p(conf.salary) / 30 / 8;
-            let mOtCash = 0, mOtHrs = 0, mWorkedHrs = 0;
-            let mLeaves = { sick: 0, personal: 0, vacation: 0 };
+        let mOtCash = 0, mOtHrs = 0, mWeekendDays = 0;
+        let mLeaves = { sick: 0, personal: 0, vacation: 0 };
 
-            Object.keys(db.days).forEach(key => {
-                const [mIdx, dIdx] = key.split('-').map(Number);
-                if (mIdx !== m) return;
-                
-                const d = db.days[key];
-                const date = new Date(year, m, dIdx);
-                const status = d.status || ( (date.getDay() === 0 || date.getDay() === 6) ? 'holiday' : 'normal');
+        // โควตาลาทั้งปี
+        const yLeaves = countLeaves(db.days);
+        document.getElementById('yL_sick').innerText = QUOTAS.sick - yLeaves.sick;
+        document.getElementById('yL_personal').innerText = QUOTAS.personal - yLeaves.personal;
+        document.getElementById('yL_vacation').innerText = QUOTAS.vacation - yLeaves.vacation;
 
-                if (mLeaves.hasOwnProperty(status)) mLeaves[status]++;
+        Object.keys(db.days).forEach(key => {
+            const [mIdx, dIdx] = key.split('-').map(Number);
+            if (mIdx !== curM) return; // คำนวณเฉพาะเดือนที่เลือก
+            
+            const d = db.days[key];
+            const date = new Date(year, curM, dIdx);
+            const status = d.status || ( (date.getDay() === 0 || date.getDay() === 6) ? 'holiday' : 'normal');
 
-                const tIn = parseTime(d.in), tOut = parseTime(d.out);
-                if (tIn && tOut) {
-                    let worked = tOut - tIn;
-                    if (worked < 0) worked += 24; 
-                    if (worked > 5) worked -= 1;
-                    mWorkedHrs += worked;
+            if (mLeaves.hasOwnProperty(status)) mLeaves[status]++;
 
-                    let dOtHrs = 0, dOtCash = 0;
-                    if (status === 'normal') {
-                        dOtHrs = Math.max(0, worked - 8);
-                        dOtCash = dOtHrs * (hRate * 1.5);
-                    } else if (status === 'holiday') {
-                        dOtCash = (Math.min(8, worked) * hRate) + (Math.max(0, worked - 8) * hRate * 3);
-                        dOtHrs = worked;
-                    }
+            const tIn = parseTime(d.in), tOut = parseTime(d.out);
+            if (tIn && tOut) {
+                let worked = tOut - tIn;
+                if (worked < 0) worked += 24; 
+                if (worked > 5) worked -= 1; // หักพักเที่ยง 1 ชม.
+
+                let dOtHrs = 0, dOtCash = 0;
+
+                // 3. ตรรกะการคำนวณ
+                if (status === 'normal') {
+                    dOtHrs = Math.max(0, worked - 8); // ทำเกิน 8 ชม.
+                    dOtCash = dOtHrs * rate_1_5;
+                } else if (status === 'holiday') {
+                    mWeekendDays++; // นับจำนวนวันที่มาทำในวันหยุด
+                    dOtHrs = worked; // เวลาทำงานในวันหยุดนับเป็น OT หมด
                     
-                    mOtCash += dOtCash;
-                    mOtHrs += dOtHrs; 
-
-                    if (m === curM) {
-                        const wh = document.getElementById(`workedh-${key}`);
-                        const oh = document.getElementById(`oth-${key}`);
-                        const ch = document.getElementById(`cash-${key}`);
-                        if(wh) wh.innerText = worked.toFixed(1) + " ชม.";
-                        if(oh) oh.innerText = dOtHrs.toFixed(1) + " ชม. (OT)";
-                        if(ch) ch.innerText = "฿" + dOtCash.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+                    let weekendPay = dailyRate; // ได้ค่าแรง 1 แรงเป็นพื้นฐาน (เหมาวัน)
+                    if (worked > 8) {
+                        weekendPay += Math.max(0, worked - 8) * rate_3_0; // ถ้าเกิน 8 ชม. ในวันหยุดให้เรต 3 เท่า
                     }
+                    dOtCash = weekendPay;
                 }
-            });
+                
+                mOtCash += dOtCash;
+                mOtHrs += dOtHrs; 
 
-            const mNet = p(conf.salary) + p(conf.relocation) + p(conf.living) + mOtCash;
-            if (mNet > 0) annualNetTotal += mNet;
-
-            if (m === curM) {
-                document.getElementById('sumNet').innerText = "฿" + mNet.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
-                document.getElementById('workedMonth').innerText = "เวลารวมทำงาน: " + mWorkedHrs.toFixed(1) + " ชม.";
-                document.getElementById('otMonthCash').innerText = "+฿" + mOtCash.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
-                document.getElementById('otMonthHrs').innerText = "เวลา OT รวม: " + mOtHrs.toFixed(1) + " ชม.";
-                document.getElementById('mL_sick').innerText = mLeaves.sick;
-                document.getElementById('mL_personal').innerText = mLeaves.personal;
-                document.getElementById('mL_vacation').innerText = mLeaves.vacation;
+                // อัปเดตตารางรายวัน
+                const oh = document.getElementById(`oth-${key}`);
+                const ch = document.getElementById(`cash-${key}`);
+                if(oh) oh.innerText = dOtHrs > 0 ? dOtHrs.toFixed(1) + " ชม." : "0 ชม.";
+                if(ch) ch.innerText = "฿" + dOtCash.toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:2});
             }
-        }
+        });
 
-        document.getElementById('ytdTotal').innerText = "฿" + annualNetTotal.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+        // 4. สรุปรายเดือน
+        const mNet = salary + living + relocation + mOtCash;
+
+        document.getElementById('sumNet').innerText = "฿" + mNet.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+        document.getElementById('otMonthCash').innerText = "+฿" + mOtCash.toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:2});
+        document.getElementById('otMonthHrs').innerText = mOtHrs.toFixed(1) + " ชม.";
+        document.getElementById('otWeekendDays').innerText = mWeekendDays + " วัน";
+        
+        document.getElementById('mL_sick').innerText = mLeaves.sick;
+        document.getElementById('mL_personal').innerText = mLeaves.personal;
+        document.getElementById('mL_vacation').innerText = mLeaves.vacation;
     }
 </script>
 </body>
