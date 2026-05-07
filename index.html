@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NextGen Time & OT Intelligence</title>
+    <title>ระบบคำนวณเงินเดือน</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020617">
@@ -202,11 +202,11 @@
                 <defs><linearGradient id="grad"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
                 <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <h1 class="brand-text" style="font-size: 32px;">INTELLIGENT PAYROLL</h1>
+            <h1 class="brand-text" style="font-size: 28px;">ระบบจัดการเงินเดือน</h1>
         </div>
-        <input type="email" id="emailInput" class="input-box" style="margin-bottom: 15px;" placeholder="Authorized Email">
-        <input type="password" id="passwordInput" class="input-box" placeholder="Access Key">
-        <button class="btn-glow" onclick="window.login()">AUTHENTICATE</button>
+        <input type="email" id="emailInput" class="input-box" style="margin-bottom: 15px;" placeholder="อีเมลผู้ใช้งาน">
+        <input type="password" id="passwordInput" class="input-box" placeholder="รหัสผ่าน">
+        <button class="btn-glow" onclick="window.login()">เข้าสู่ระบบ</button>
     </div>
 </div>
 
@@ -214,39 +214,39 @@
     <div class="header">
         <div class="brand">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span class="brand-text">SYSTEM DASHBOARD</span>
+            <span class="brand-text">แดชบอร์ดระบบเงินเดือน</span>
         </div>
         <div style="display: flex; gap: 15px;">
             <select id="monthPicker" class="input-box" style="width: 150px;" onchange="initTable()">
-                <option value="0">JANUARY</option><option value="1">FEBRUARY</option><option value="2">MARCH</option>
-                <option value="3">APRIL</option><option value="4" selected>MAY</option><option value="5">JUNE</option>
-                <option value="6">JULY</option><option value="7">AUGUST</option><option value="8">SEPTEMBER</option>
-                <option value="9">OCTOBER</option><option value="10">NOVEMBER</option><option value="11">DECEMBER</option>
+                <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option><option value="2">มีนาคม</option>
+                <option value="3">เมษายน</option><option value="4" selected>พฤษภาคม</option><option value="5">มิถุนายน</option>
+                <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option><option value="8">กันยายน</option>
+                <option value="9">ตุลาคม</option><option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
             </select>
-            <button onclick="logout()" style="background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-weight: 700;">EXIT</button>
+            <button onclick="logout()" style="background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-weight: 700;">ออกจากระบบ</button>
         </div>
     </div>
 
     <div class="hero-grid">
         <div class="glass-panel stat-main-card">
-            <div class="stat-label">Net Income (Current Month)</div>
+            <div class="stat-label">รายรับสุทธิ (เดือนปัจจุบัน)</div>
             <div id="sumNet" class="stat-value" style="color: #fff;">฿0.00</div>
-            <div id="otMonth" style="font-size: 14px; color: var(--accent); font-weight: 700;">0.0 OT HOURS ACCUMULATED</div>
+            <div id="otMonth" style="font-size: 14px; color: var(--accent); font-weight: 700;">0.0 ชั่วโมง OT สะสม</div>
         </div>
         <div class="glass-panel stat-main-card">
-            <div class="stat-label">YTD Annual Income (2026)</div>
+            <div class="stat-label">รายได้สะสมปี 2026 (YTD)</div>
             <div id="yearTotal" class="stat-value" style="background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">฿0</div>
-            <div id="sumOt" style="font-size: 14px; color: var(--success); font-weight: 700;">+฿0.00 OT BONUS</div>
+            <div id="sumOt" style="font-size: 14px; color: var(--success); font-weight: 700;">+฿0.00 ค่าล่วงเวลา (OT)</div>
         </div>
     </div>
 
     <div class="config-bar">
-        <div><label class="stat-label">Base Salary</label><input type="text" id="salary" class="input-box" oninput="formatMoney(this)" value="30,000"></div>
-        <div><label class="stat-label">Relocation</label><input type="text" id="moving" class="input-box" oninput="formatMoney(this)" value="0"></div>
-        <div><label class="stat-label">Allowance</label><input type="text" id="living" class="input-box" oninput="formatMoney(this)" value="0"></div>
+        <div><label class="stat-label">เงินเดือนพื้นฐาน</label><input type="text" id="salary" class="input-box" oninput="formatMoney(this)" value="30,000"></div>
+        <div><label class="stat-label">ค่าเดินทาง</label><input type="text" id="moving" class="input-box" oninput="formatMoney(this)" value="0"></div>
+        <div><label class="stat-label">ค่าครองชีพ</label><input type="text" id="living" class="input-box" oninput="formatMoney(this)" value="0"></div>
         <div style="display: flex; flex-direction: column; justify-content: center;">
-            <div class="stat-label">Leave Status</div>
-            <div id="mLeaveBox" style="font-size: 12px; font-weight: 700;">SICK: 0 | PERS: 0 | VAC: 0</div>
+            <div class="stat-label">สถิติการลา</div>
+            <div id="mLeaveBox" style="font-size: 14px; font-weight: 700; color: #fff;">ป่วย: 0 | กิจ: 0 | พักร้อน: 0</div>
         </div>
     </div>
 
@@ -254,11 +254,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>Day</th>
-                    <th>Duty Period (In-Out)</th>
-                    <th>Classification</th>
-                    <th>Intelligence Note</th>
-                    <th>Premium / OT</th>
+                    <th>วันที่</th>
+                    <th>เวลาเข้า-ออกงาน</th>
+                    <th>ประเภทวัน</th>
+                    <th>บันทึกย่อ</th>
+                    <th>ชั่วโมง / ค่า OT</th>
                 </tr>
             </thead>
             <tbody id="workTable"></tbody>
@@ -286,7 +286,8 @@
     const auth = getAuth(app);
 
     const year = 2026;
-    const statsNames = { normal:"NORMAL", holiday:"HOLIDAY", sick:"SICK", personal:"PERSONAL", vacation:"VACATION" };
+    // แปลงคำศัพท์ Dropdown ให้เป็นภาษาไทย
+    const statsNames = { normal:"วันทำงานปกติ", holiday:"วันหยุด", sick:"ลาป่วย", personal:"ลากิจ", vacation:"ลาพักร้อน" };
     let db = { days: {}, configs: {} };
 
     onAuthStateChanged(auth, (user) => {
@@ -300,9 +301,8 @@
         }
     });
 
-    // อัปเดตฟังก์ชันล็อกอินให้แสดงสาเหตุ Error ของจริง
     window.login = () => {
-        const email = document.getElementById('emailInput').value.trim(); // .trim() ช่วยตัดช่องว่างที่เผลอพิมพ์
+        const email = document.getElementById('emailInput').value.trim();
         const pass = document.getElementById('passwordInput').value.trim();
         signInWithEmailAndPassword(auth, email, pass).catch((error) => {
             alert(`เข้าสู่ระบบไม่สำเร็จ!\nสาเหตุ: ${error.code}\nรายละเอียด: ${error.message}`);
@@ -327,6 +327,9 @@
         document.getElementById('salary').value = conf.salary;
         
         const days = new Date(year, m + 1, 0).getDate();
+        // ชื่อวันภาษาไทย
+        const thaiDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+
         for (let i = 1; i <= days; i++) {
             const key = `${m}-${i}`;
             const d = db.days[key] || {};
@@ -337,19 +340,19 @@
             const tr = document.createElement('tr');
             tr.className = `row-${status}`;
             tr.innerHTML = `
-                <td><span style="font-weight:800; font-size:18px;">${i}</span><br><small>${['SUN','MON','TUE','WED','THU','FRI','SAT'][date.getDay()]}</small></td>
+                <td><span style="font-weight:800; font-size:18px;">${i}</span><br><small>${thaiDays[date.getDay()]}</small></td>
                 <td>
                     <input type="text" class="time-input" onblur="updateTime('${key}','in',this)" value="${d.in||''}" placeholder="08:00">
                     <input type="text" class="time-input" onblur="updateTime('${key}','out',this)" value="${d.out||''}" placeholder="17:00">
                 </td>
                 <td>
-                    <select class="input-box" style="font-size:12px;" onchange="updateStatus('${key}',this)">
+                    <select class="input-box" style="font-size:13px;" onchange="updateStatus('${key}',this)">
                         ${Object.keys(statsNames).map(k=>`<option value="${k}" ${status==k?'selected':''}>${statsNames[k]}</option>`).join('')}
                     </select>
                 </td>
                 <td><input type="text" class="input-box" style="font-size:13px;" onblur="updateNote('${key}',this)" value="${d.note||''}"></td>
                 <td style="text-align:right;">
-                    <div id="oth-${key}" style="color:var(--primary); font-weight:800;">0h</div>
+                    <div id="oth-${key}" style="color:var(--primary); font-weight:800;">0 ชม.</div>
                     <div id="cash-${key}" style="color:var(--success); font-size:12px;">฿0.00</div>
                 </td>
             `;
@@ -388,20 +391,18 @@
         set(ref(rtdb, 'payroll_data_2026'), db);
     };
 
-    // ฟังก์ชันแปลงเวลาแบบ String (เช่น "18:30") เป็นตัวเลขทศนิยม
     function parseTime(t) {
         if (!t || !t.includes(':')) return null;
         const [h, m] = t.split(':').map(Number);
         return h + (m / 60);
     }
 
-    // ระบบคำนวณแบบใหม่ (อิงตาม กม. แรงงาน)
     function calc() {
         const curM = parseInt(document.getElementById('monthPicker').value);
         const p = (v) => parseFloat(String(v).replace(/,/g, "")) || 0;
         
         const baseSalary = p(document.getElementById('salary').value);
-        const hourlyRate = baseSalary / 30 / 8; // เรตรายชั่วโมง
+        const hourlyRate = baseSalary / 30 / 8;
         
         let mOtCash = 0;
         let mOtHrs = 0;
@@ -414,7 +415,6 @@
 
             const d = db.days[key];
             
-            // นับจำนวนวันลา
             if (d.status === 'sick') mLeaves.sick++;
             if (d.status === 'personal') mLeaves.personal++;
             if (d.status === 'vacation') mLeaves.vacation++;
@@ -424,17 +424,15 @@
 
             if (timeIn && timeOut) {
                 let totalWorked = timeOut - timeIn;
-                if (totalWorked > 5) totalWorked -= 1; // หักพักเที่ยง 1 ชม.
+                if (totalWorked > 5) totalWorked -= 1; // หักพักเที่ยง
 
                 let dailyOtHrs = 0;
                 let dailyOtCash = 0;
 
                 if (d.status === 'normal') {
-                    // วันทำงานปกติ OT 1.5 เท่า
                     dailyOtHrs = Math.max(0, totalWorked - 8);
                     dailyOtCash = dailyOtHrs * (hourlyRate * 1.5);
                 } else if (d.status === 'holiday') {
-                    // วันหยุด
                     const normalHolidayHrs = Math.min(8, totalWorked);
                     const otHolidayHrs = Math.max(0, totalWorked - 8);
                     dailyOtCash = (normalHolidayHrs * hourlyRate) + (otHolidayHrs * hourlyRate * 3);
@@ -446,16 +444,16 @@
 
                 const otLabel = document.getElementById(`oth-${key}`);
                 const cashLabel = document.getElementById(`cash-${key}`);
-                if (otLabel) otLabel.innerText = dailyOtHrs.toFixed(1) + "h";
+                if (otLabel) otLabel.innerText = dailyOtHrs.toFixed(1) + " ชม.";
                 if (cashLabel) cashLabel.innerText = "฿" + dailyOtCash.toLocaleString(undefined, {minimumFractionDigits: 2});
             }
         });
 
         document.getElementById('sumNet').innerText = "฿" + (totalFixed + mOtCash).toLocaleString(undefined, {minimumFractionDigits: 2});
         document.getElementById('yearTotal').innerText = "฿" + (totalFixed * 12).toLocaleString(); 
-        document.getElementById('otMonth').innerText = mOtHrs.toFixed(1) + " OT HOURS ACCUMULATED";
-        document.getElementById('sumOt').innerText = "+฿" + mOtCash.toLocaleString(undefined, {minimumFractionDigits: 2}) + " OT BONUS";
-        document.getElementById('mLeaveBox').innerText = `SICK: ${mLeaves.sick} | PERS: ${mLeaves.personal} | VAC: ${mLeaves.vacation}`;
+        document.getElementById('otMonth').innerText = mOtHrs.toFixed(1) + " ชั่วโมง OT สะสม";
+        document.getElementById('sumOt').innerText = "+฿" + mOtCash.toLocaleString(undefined, {minimumFractionDigits: 2}) + " ค่าล่วงเวลา (OT)";
+        document.getElementById('mLeaveBox').innerText = `ป่วย: ${mLeaves.sick} | กิจ: ${mLeaves.personal} | พักร้อน: ${mLeaves.vacation}`;
     }
 
 </script>
