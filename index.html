@@ -392,7 +392,9 @@
                         dOtCash = (Math.min(8, worked) * hRate) + (Math.max(0, worked - 8) * hRate * 3);
                         dOtHrs = worked;
                     }
+                    
                     mOtCash += dOtCash;
+                    mOtHrs += dOtHrs; // <--- เพิ่มบรรทัดนี้เพื่อบวกชั่วโมง OT สะสม
 
                     // อัปเดตตารางเฉพาะเดือนที่เลือกดูอยู่
                     if (m === curM) {
@@ -401,11 +403,31 @@
                         const ch = document.getElementById(`cash-${key}`);
                         if(wh) wh.innerText = worked.toFixed(1) + " ชม.";
                         if(oh) oh.innerText = dOtHrs.toFixed(1) + " ชม. (OT)";
-                        if(ch) ch.innerText = "฿" + dOtCash.toLocaleString(undefined,{minimumFractionDigits:2});
+                        // ปรับให้โชว์ทศนิยม 2 ตำแหน่งเป๊ะๆ
+                        if(ch) ch.innerText = "฿" + dOtCash.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
                     }
                 }
             });
 
+            const mNet = p(conf.salary) + p(conf.relocation) + p(conf.living) + mOtCash;
+            if (mNet > 0) annualNetTotal += mNet;
+
+            // อัปเดต UI สรุปรายเดือน
+            if (m === curM) {
+                // ปรับให้โชว์ทศนิยม 2 ตำแหน่งเป๊ะๆ ไม่ให้มีติ่ง .493 แบบในรูป
+                document.getElementById('sumNet').innerText = "฿" + mNet.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+                document.getElementById('workedMonth').innerText = "เวลารวมทำงาน: " + mWorkedHrs.toFixed(1) + " ชม.";
+                document.getElementById('otMonthCash').innerText = "+฿" + mOtCash.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+                document.getElementById('otMonthHrs').innerText = "เวลา OT รวม: " + mOtHrs.toFixed(1) + " ชม.";
+                document.getElementById('mL_sick').innerText = mLeaves.sick;
+                document.getElementById('mL_personal').innerText = mLeaves.personal;
+                document.getElementById('mL_vacation').innerText = mLeaves.vacation;
+            }
+        }
+
+        // แสดงยอดรวมทั้งปี (ปัดทศนิยม 2 ตำแหน่ง)
+        document.getElementById('ytdTotal').innerText = "฿" + annualNetTotal.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+    }
             const mNet = p(conf.salary) + p(conf.relocation) + p(conf.living) + mOtCash;
             if (mNet > 0) annualNetTotal += mNet;
 
