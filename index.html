@@ -158,7 +158,7 @@
         <div style="display: flex; gap: 10px;">
             <select id="monthPicker" class="neo-input" style="width: 150px; font-weight: 800; color: var(--primary);" onchange="initTable()">
                 <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option><option value="2">มีนาคม</option>
-                <option value="3">เมษายน</option><option value="4" selected>พฤษภาคม</option><option value="5">มิถุนายน</option>
+                <option value="3">เมษายน</option><option value="4">พฤษภาคม</option><option value="5">มิถุนายน</option>
                 <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option><option value="8">กันยายน</option>
                 <option value="9">ตุลาคม</option><option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
             </select>
@@ -274,6 +274,10 @@
     });
 
     function startSync() {
+        // [แก้ไขจุดนี้] ตั้งค่าเริ่มต้นของ Dropdown ให้เป็นเดือนปัจจุบันจากเครื่องผู้ใช้งานโดยอัตโนมัติ
+        const currentMonth = new Date().getMonth();
+        document.getElementById('monthPicker').value = currentMonth;
+
         onValue(ref(rtdb, 'payroll_data_2026'), (snap) => {
             db = snap.val() || { days: {}, configs: {} };
             initTable();
@@ -302,7 +306,6 @@
             const tr = document.createElement('tr');
             tr.className = `row-${status}`; 
             
-            // ลบ Placeholder ทิ้งไปตามคำขอ เพื่อให้ตารางดูสะอาดตาเวลายังไม่ได้ลงงาน
             tr.innerHTML = `
                 <td data-label="วันที่"><span style="font-weight:900; font-size:20px;">${i}</span> <small style="color:var(--text-muted);">${thaiDays[date.getDay()]}</small></td>
                 <td data-label="เวลา เข้า-ออก">
@@ -450,10 +453,8 @@
                     let worked = tOut - tIn;
                     if (worked < 0) worked += 24; 
                     
-                    // หักเวลาพักเที่ยง 1 ชม. 
                     if (worked > 5) worked -= 1; 
 
-                    // หักเวลาพักเย็น (17.30 - 18.30) อัตโนมัติ หากทำงานล่วงเวลาผ่านช่วงนี้
                     let dinnerBreak = 0;
                     if (tOut > 17.5 && tIn < 18.5) {
                         dinnerBreak = Math.min(tOut, 18.5) - Math.max(tIn, 17.5);
